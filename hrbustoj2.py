@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:05:17
-LastEditTime: 2023-08-29 12:49:19
+LastEditTime: 2023-08-29 17:08:56
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -32,10 +32,7 @@ from tkinter import *
 from tkinter import ttk
 import contest_page as cp
 
-contest=""
-
-
-
+session=requests.Session()
 
 class ojlist:
     def __init__(self):
@@ -54,8 +51,9 @@ url = "http://acm.hrbust.edu.cn"
 
 cookies = {
     'last_problem_vol': '16',
-    'PHPSESSID' : 'lglob604lp2if74qq5md6jtp73'
 }
+
+session.cookies.update(cookies)
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -79,7 +77,7 @@ headers = {
 
 def double_click_ojlist(list,ojlisturl):
     print("double click")
-    print(list)
+    # print(list)
     selection = list.curselection()
     if selection:
         index = selection[0]
@@ -100,7 +98,7 @@ def get_url_text(page_id):
     window.title("hrbustoj")
     window.geometry("600x400+600+200")
 
-    response = requests.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, cookies=cookies, headers=headers, verify=False)
+    response = session.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, headers=headers, verify=False)
     page_text = response.text #请求发送
     soup=BeautifulSoup(page_text,'lxml')
 
@@ -155,6 +153,7 @@ def get_url_text(page_id):
             list.insert(END, str(cnt) + "    " + str(b.name[r]) + "    " + str(b.time[r]) + "    " + str(b.status[r]) + "    " + str(b.access[r]))
             cnt+=1
             r+=1
+
 
     page_id_text = tk.Text(window, height=1,width=20)
     button1 = Button(window, text="goTO!", command = goTopage)

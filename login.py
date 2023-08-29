@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-27 23:59:55
-LastEditTime: 2023-08-29 16:26:44
+LastEditTime: 2023-08-29 17:20:56
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -26,14 +26,9 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC88fBRU1FaC5S537krMDVDapOZk44Nw+Yud69IPZYw
 
 url = "http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085"
 session = requests.Session()
-response = session.get(url)
 
+# soup = BeautifulSoup(response.text, 'html.parser')
 
-soup = BeautifulSoup(response.text, 'html.parser')
-print(session.cookies)
-# 假设您已经使用BeautifulSoup找到了username和password的input标签
-uid = soup.find("input", {"id": "username"})
-pwd = soup.find("input", {"id": "password"})
 
 # 获取用户名和密码
 username = "2204010110"
@@ -72,7 +67,7 @@ headers = {
     # 'Cookie': 'last_problem_vol=16; PHPSESSID=ff176qecr535rfpi2uo19ss397',
     'Origin': 'http://acm.hrbust.edu.cn',
     'Proxy-Connection': 'keep-alive',
-    'Referer': 'http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085',
+    # 'Referer': 'http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62',
 }
