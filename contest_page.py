@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-08-30 20:47:17
+LastEditTime: 2023-08-31 19:20:41
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -21,6 +21,7 @@ import json
 import base64
 from global_var import session
 import contest_problem_info as cpi
+from contest_page_status import get_status_info
 
 class Problems:
     def __init__(self):
@@ -81,6 +82,24 @@ a = Problems();b = Problems()
 # cookies = response.cookies
 print(1,session.cookies)
 
+def open_problems_page():
+    # 在此处实现打开 Problems 页面的逻辑
+    pass
+
+def open_status_page(cid):
+    # 在此处实现打开 Status 页面的逻辑
+    get_status_info(url + "/contests/index.php?act=status&cid=" + str(cid))
+
+def open_statistics_page(cid):
+    # 在此处实现打开 Statistics 页面的逻辑
+    pass
+
+def open_ranklist_page(url):
+    # 在此处实现打开 Ranklist 页面的逻辑
+    pass
+
+
+
 def goToproblem_info(list,contest_problemslist):
     global session
     print("double click")
@@ -103,15 +122,41 @@ def goToproblem_info(list,contest_problemslist):
 
 
 def get_contest_info(url):
+    window = tk.Tk()
+    window.title("hrbustoj_contest_info")
+    window.geometry("800x600+600+200")
     contest_problemslist={}
     global session
     print(2,session.cookies)
     url=url.replace("problems","login")
     # print(url)
-    window = tk.Tk()
-    window.title("hrbustoj_contest_info")
-    window.geometry("800x600+600+200")
     cid=url.split("cid=")[1]
+
+    button_frame = Frame(window)
+    # 创建四个按钮并添加到按钮框架
+    problems_button = Button(button_frame, text="Problems", command=lambda: open_problems_page())
+    status_button = Button(button_frame, text="Status", command=lambda: open_status_page(cid))
+    statistics_button = Button(button_frame, text="Statistics", command=lambda: open_statistics_page(cid))
+    ranklist_button = Button(button_frame, text="Ranklist", command=lambda: open_ranklist_page(url))
+    
+    # 设置按钮样式
+    button_style = ("Helvetica", 16)
+    problems_button.config(font=button_style)
+    status_button.config(font=button_style)
+    statistics_button.config(font=button_style)
+    ranklist_button.config(font=button_style)
+    
+    # 布局按钮
+    problems_button.pack(side=LEFT, padx=10)
+    status_button.pack(side=LEFT, padx=10)
+    statistics_button.pack(side=LEFT, padx=10)
+    ranklist_button.pack(side=LEFT, padx=10)
+    
+    button_frame.pack(side=TOP, fill=X)
+
+
+
+    
     # print(cid)
     # print(encoded)
     data = {

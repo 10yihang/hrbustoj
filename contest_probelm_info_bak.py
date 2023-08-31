@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-29 18:29:43
-LastEditTime: 2023-08-31 17:04:07
+LastEditTime: 2023-08-31 18:24:28
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -19,6 +19,7 @@ from tkinter import ttk
 # from hrbustoj2 import session
 from global_var import session
 import html
+import re
 
 f = open('problem.txt', 'w', encoding='utf-8')
 
@@ -34,6 +35,10 @@ headers = {
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62',
 }
+
+def on_mouse_wheel(event):
+    global canvas
+    canvas.yview_scroll(-1 * (event.delta // 120), "units")
 
 def copy_text(text):
     global window
@@ -70,22 +75,31 @@ def get_problem_info(url):
     print(total_ac,file=f)
     print(special_judge,file=f)
     print(time_limit)
-    global window 
+    global window , canvas
     window = tk.Tk()
     window.title(title)
     window.geometry("800x600+600+200")
 
-    scrollbar = tk.Scrollbar(window)
+    canvas = tk.Canvas(window)
+    canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    # 创建垂直滚动条并连接到 Canvas
+    scrollbar = tk.Scrollbar(window, command=canvas.yview)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    canvas.config(yscrollcommand=scrollbar.set)
+
+    # 在 Canvas 内创建一个 Frame 来放置内容
+    frame = tk.Frame(canvas)
+    canvas.create_window((0, 0), window=frame, anchor='nw')
 
 
-    wd_title = Label(window, text=title, font=("Arial", 20), width=50, height=2)
+    wd_title = Label(frame, text=title, font=("黑体", 20, 'bold'), width=50, height=2)
     wd_title.pack()
-    wd_time_limit = Label(window, text=time_limit, font=("Arial", 15), width=50, height=2)
+    wd_time_limit = Label(frame, text=time_limit, font=("Arial", 15), width=50, height=2)
     wd_time_limit.pack()
-    wd_total_submit = Label(window, text=total_submit + "    " + total_ac, font=("Arial", 15), width=50, height=2)
+    wd_total_submit = Label(frame, text=total_submit + "    " + total_ac, font=("Arial", 15), width=50, height=2)
     wd_total_submit.pack()
-    wd_special_judge = Label(window, text=special_judge, font=("Arial", 15), width=50, height=2)
+    wd_special_judge = Label(frame, text=special_judge, font=("Arial", 15), width=50, height=2)
     wd_special_judge.pack()
     
     Description = soup.find_all("td", class_="problem_mod_title")
@@ -93,22 +107,26 @@ def get_problem_info(url):
     # print(Description[5].text)
     # print(content[5].text)
     for i in range(len(Description)):
-        wd_Description = Label(window, text=Description[i].text, font=("Arial", 15), anchor='w')
+        wd_Description = tk.Label(frame, text=Description[i].text, font=("Arial", 15, 'bold'), anchor='w')
         wd_Description.pack(fill='x')
-        estimated_lines = content[i].text.count('\n') + 1
-        text_widget = Text(window, wrap=tk.WORD, state='disabled', bg='white', font=(12), height=estimated_lines)
-        text_widget.pack(fill='x', expand=True)
+
         content_text = content[i].text.strip()
-        
+        estimated_lines = len(re.findall(r'\r\n|\r|\n', content_text)) + 1
+        # estimated_lines = content_text.count('\n') + 1
+        content_text = re.sub(r'(?<=\n)\s+', '', content_text)
+        print(content_text)
+        text_widget = tk.Text(frame,wrap=tk.WORD, state='disabled',  font=("黑体",15), height=estimated_lines)
         text_widget.configure(state='normal')
         text_widget.insert("insert", content_text)
         text_widget.configure(state='disabled')
 
-        copy_button = tk.Button(window, text="Copy", command=lambda text=content_text: copy_text(text))
-        copy_button.pack(pady=10)
-    
-    
-
+        copy_button = tk.Button(frame, text="Copy", command=lambda text=content_text: copy_text(text))
+        copy_button.pack(fill='x', expand=True)
+        text_widget.pack(fill=BOTH, expand=True)
+        
+    frame.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox("all"))
+    canvas.bind_all("<MouseWheel>", on_mouse_wheel)
 
     window.mainloop()
 
