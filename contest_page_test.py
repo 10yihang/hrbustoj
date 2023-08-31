@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-08-30 20:47:17
+LastEditTime: 2023-08-30 20:54:30
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -47,7 +47,7 @@ headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Cache-Control': 'max-age=0',
     'Content-Type': 'application/x-www-form-urlencoded',
-    # 'Cookie': 'last_problem_vol=16; PHPSESSID=ff176qecr535rfpi2uo19ss397',
+    # 'Cookie': 'last_problem_vol=16; PHPSESSID=eghmt5akhu5hk4et6mhd01nri0',
     'Origin': 'http://acm.hrbust.edu.cn',
     'Proxy-Connection': 'keep-alive',
     # 'Referer': 'http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085',
@@ -60,11 +60,14 @@ password = "087116"
 
 # 加载RSA公钥
 public_key = RSA.import_key(login_rsa_public_key)
+
 # print(public_key.text)
 # 使用公钥加密用户名和密码
 cipher = PKCS1_v1_5.new(public_key)
+
 # print(cipher)
 data = json.dumps({"username": username, "password": password}).encode('utf-8')
+
 # print(data)
 encrypted = cipher.encrypt(data)
 
@@ -92,7 +95,7 @@ def goToproblem_info(list,contest_problemslist):
         cpi.get_problem_info(url + '/contests/' + contest_problemslist[problem])
         # session.cookies.update(cookies)
         # cookies = session.cookies
-        # print(cookies)
+        # # print(cookies)
         # page = session.get(url + '/contests/' + contest_problemslist[problem], headers=headers, data=data)
         # print(page.text,file=f)
         # print(page.text)
@@ -110,7 +113,7 @@ def get_contest_info(url):
     # print(url)
     window = tk.Tk()
     window.title("hrbustoj_contest_info")
-    window.geometry("800x600+600+200")
+    window.geometry("600x500+600+200")
     cid=url.split("cid=")[1]
     # print(cid)
     # print(encoded)
@@ -206,7 +209,5 @@ def get_contest_info(url):
     scrollbar.config(command=list.yview)
     window.mainloop()
 
-# if __name__ == "__main__":
 
-#     print(4,session.cookies)
-#     get_contest_info("http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085")
+get_contest_info("http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085")

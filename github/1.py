@@ -17,7 +17,9 @@ f = b.get_form(action='index.php?act=login&cid=2085')
 # 提交表单
 b.submit_form(f)
 # 获取提交成功后主页的数据
-# for a_tag in b.select('a[href]'):
-#     print(a_tag.attrs['href'])
+contest_result=[]
+for a_tag in b.select('a[href]'):
+    print(a_tag.attrs['href'])
+
 b.follow_link(b.get_link('href'))
 print(b)

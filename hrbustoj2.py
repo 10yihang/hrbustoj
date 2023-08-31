@@ -1,7 +1,14 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:05:17
-LastEditTime: 2023-08-29 17:08:56
+LastEditTime: 2023-08-29 22:34:06
+Description: 爱自己最重要啦
+QwQ 加油加油
+'''
+'''
+author: yihang_01
+Date: 2023-08-28 22:05:17
+LastEditTime: 2023-08-29 22:32:24
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -31,8 +38,21 @@ import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 import contest_page as cp
+from global_var import session
+# session=requests.Session()
 
-session=requests.Session()
+url = "http://acm.hrbust.edu.cn"
+
+headers = {
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+    'Cache-Control': 'max-age=0',
+    # 'Cookie': 'last_problem_vol=16; PHPSESSID=gfneklckpmd3dim8df0hb4m326',
+    'Proxy-Connection': 'keep-alive',
+    # 'Referer': 'http://acm.hrbust.edu.cn/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
+}
 
 class ojlist:
     def __init__(self):
@@ -47,33 +67,37 @@ class ojlist:
 
 f=open('hrbustoj.txt','w',encoding='utf-8')
 
-url = "http://acm.hrbust.edu.cn"
+# url = "http://acm.hrbust.edu.cn"
 
-cookies = {
-    'last_problem_vol': '16',
-}
+# session.get(url)
 
-session.cookies.update(cookies)
-
-headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-    'Cache-Control': 'max-age=0',
-    # 'Cookie': 'last_problem_vol=16; PHPSESSID=gfneklckpmd3dim8df0hb4m326',
-    'Proxy-Connection': 'keep-alive',
-    # 'Referer': 'http://acm.hrbust.edu.cn/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
-}
-
-# params = {
-#     'm': 'Contest',
-#     'a': 'contestVolume',
-#     'ctitle': '',
-#     'ctype': '',
-#     'cstate': '',
-#     'page_id': '1',
+# cookies = {
+#     'last_problem_vol': '16',
 # }
+
+# session.cookies.update(cookies)
+
+# print(0,session.cookies)
+
+# headers = {
+#     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+#     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
+#     'Cache-Control': 'max-age=0',
+#     # 'Cookie': 'last_problem_vol=16; PHPSESSID=gfneklckpmd3dim8df0hb4m326',
+#     'Proxy-Connection': 'keep-alive',
+#     # 'Referer': 'http://acm.hrbust.edu.cn/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1',
+#     'Upgrade-Insecure-Requests': '1',
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
+# }
+
+# # params = {
+# #     'm': 'Contest',
+# #     'a': 'contestVolume',
+# #     'ctitle': '',
+# #     'ctype': '',
+# #     'cstate': '',
+# #     'page_id': '1',
+# # }
 
 def double_click_ojlist(list,ojlisturl):
     print("double click")
@@ -89,6 +113,7 @@ def double_click_ojlist(list,ojlisturl):
     
     
 def get_url_text(page_id):
+    global session
     def goTopage():
         global page_id
         page_id = page_id_text.get("1.0", "end-1c")
@@ -96,12 +121,11 @@ def get_url_text(page_id):
     a=ojlist();b=ojlist();ojlisturl={}
     window = tk.Tk()
     window.title("hrbustoj")
-    window.geometry("600x400+600+200")
+    window.geometry("800x600+600+200")
 
     response = session.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, headers=headers, verify=False)
     page_text = response.text #请求发送
     soup=BeautifulSoup(page_text,'lxml')
-
     content0="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td > a"
     content1="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row1 > td > a"
     select_access0 = "body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td:nth-child(3)"
@@ -169,9 +193,7 @@ def get_url_text(page_id):
 
 
 
-if __name__ == "__main__":
-    get_url_text("1")
-
+get_url_text('1')
 # list.pack()
 # print(a)
 # document.querySelector("body > table.body_table > tbody > tr > td.right_table > table.ojlist > tbody > tr")
