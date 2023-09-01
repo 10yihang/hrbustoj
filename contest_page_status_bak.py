@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-31 18:56:13
-LastEditTime: 2023-09-01 21:35:34
+LastEditTime: 2023-09-01 19:32:44
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -43,8 +43,7 @@ def open_status_page(cid):
 
 def open_statistics_page(cid):
     # 在此处实现打开 Statistics 页面的逻辑
-    from contest_page_statistics import get_statistics_info
-    get_statistics_info(url + "/contests/index.php?act=statistics&cid=" + str(cid))
+    pass
 
 def open_ranklist_page(url):
     # 在此处实现打开 Ranklist 页面的逻辑
@@ -57,8 +56,6 @@ def get_status_info(url):
     window.lift()  # 将窗口提到前台
     # window.attributes("-topmost", True)  # 确保窗口位于顶层
     window.focus_force()  # 强制窗口获得焦点
-
-    cid=url.split("cid=")[1]
 
     global canvas
     canvas = Canvas(window)
@@ -106,7 +103,7 @@ def get_status_info(url):
 
     button_frame.grid(row=0, column=0, columnspan=5, sticky="ew") 
     
-    header_frame=Frame(content_frame)
+
     
     page = session.get(url, headers=headers)
     # print(page.text)
@@ -116,11 +113,10 @@ def get_status_info(url):
     # run_id = [];problem_id = [];judgestatus = [];language = [];time = [];memory = [];code_length = [];submit_time = []
 
     # status_button.focus_set()
-    data=[]
-    for i, header in enumerate(["RunID", "ID", "JudgeStatus", "Language", "Time", "Memory", "Length", "SubmitTime"]):
-        label = Label(header_frame, text=header, font=("Arial", 12, "bold"))
-        label.grid(row=1, column=i, padx=2, pady=2, sticky="nsew")
-    header_frame.grid(row=1, column=0, columnspan=5, sticky="ew")
+    
+    # for i, header in enumerate(["RunID", "ID", "JudgeStatus", "Language", "Time", "Memory", "Length", "SubmitTime"]):
+    #     label = tk.Label(content_frame, text=header, font=("Arial", 12, "bold"))
+    #     label.grid(row=1, column=i, padx=1, pady=1, sticky="nsew")
 
     for i in range(len(total_status)):
         tds = total_status[i].find_all("td")
@@ -134,16 +130,11 @@ def get_status_info(url):
         submit_time = tds[7].text
         language = language.replace("\n","").strip()
         submit_time = submit_time.replace("\n","").strip()
-        data.append([run_id, problem_id, judgestatus, language, time, memory, code_length, submit_time])
-    #     # print(submit_time)
-    #     status_label = Label(content_frame, text=run_id + " " + problem_id + " " + judgestatus + " " + language + " " + time + " " + memory + " " + code_length + " " + submit_time, font=("Arial", 15), height=4)
-    #     # status_label = Label(window, text=run_id + " " + problem_id + " " + judgestatus , font=("Arial", 15), height=4)
-    #     status_label.grid(row=i+2, column=0, sticky="w")  # 添加 sticky="w" 参数，让Label紧贴左边
+        # print(submit_time)
+        status_label = Label(content_frame, text=run_id + " " + problem_id + " " + judgestatus + " " + language + " " + time + " " + memory + " " + code_length + " " + submit_time, font=("Arial", 15), height=4)
+        # status_label = Label(window, text=run_id + " " + problem_id + " " + judgestatus , font=("Arial", 15), height=4)
+        status_label.grid(row=i+2, column=0, sticky="w")  # 添加 sticky="w" 参数，让Label紧贴左边
 
-    for i, row in enumerate(data):
-        for j, value in enumerate(row):
-            label = tk.Label(header_frame, text=value, font=("Arial", 12))
-            label.grid(row=i+2, column=j, padx=2, pady=2, sticky="w")
 
     # content_frame.update_idletasks()  # 更新content_frame以获取实际高度
     # # content_height = content_frame.winfo_height()

@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:05:17
-LastEditTime: 2023-08-31 23:35:56
+LastEditTime: 2023-09-01 19:11:19
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -115,10 +115,13 @@ def double_click_ojlist(list,ojlisturl):
     
 def get_url_text(page_id):
     global session
-    def goTopage():
+    def goTopage(window):
         global page_id
         page_id = page_id_text.get("1.0", "end-1c")
-        get_url_text(page_id)
+        if page_id != "":
+            window.destroy()
+            get_url_text(page_id)
+        
     a=ojlist();b=ojlist();ojlisturl={}
     window = tk.Tk()
     window.title("hrbustoj")
@@ -183,7 +186,7 @@ def get_url_text(page_id):
 
 
     page_id_text = tk.Text(window, height=1,width=20)
-    button1 = Button(window, text="goTO!", command = goTopage)
+    button1 = Button(window, text="goTO!", command = lambda: goTopage(window))
     page_id_text.pack(side=TOP)
     button1.pack(side=TOP)
 

@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-08-31 19:20:41
+LastEditTime: 2023-09-01 22:12:36
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -21,7 +21,8 @@ import json
 import base64
 from global_var import session
 import contest_problem_info as cpi
-from contest_page_status import get_status_info
+
+
 
 class Problems:
     def __init__(self):
@@ -87,12 +88,14 @@ def open_problems_page():
     pass
 
 def open_status_page(cid):
+    from contest_page_status import get_status_info
     # 在此处实现打开 Status 页面的逻辑
     get_status_info(url + "/contests/index.php?act=status&cid=" + str(cid))
 
 def open_statistics_page(cid):
+    from contest_page_statistics import get_statistics_info
     # 在此处实现打开 Statistics 页面的逻辑
-    pass
+    get_statistics_info(url + "/contests/index.php?act=statistics&cid=" + str(cid))
 
 def open_ranklist_page(url):
     # 在此处实现打开 Ranklist 页面的逻辑
@@ -107,7 +110,7 @@ def goToproblem_info(list,contest_problemslist):
     if selection:
         index = selection[0]
         problem = list.get(index).split("    ")[2]
-        print(contest_problemslist[problem])
+        # print(contest_problemslist[problem])
         cpi.get_problem_info(url + '/contests/' + contest_problemslist[problem])
         # session.cookies.update(cookies)
         # cookies = session.cookies
@@ -131,7 +134,7 @@ def get_contest_info(url):
     url=url.replace("problems","login")
     # print(url)
     cid=url.split("cid=")[1]
-
+    
     button_frame = Frame(window)
     # 创建四个按钮并添加到按钮框架
     problems_button = Button(button_frame, text="Problems", command=lambda: open_problems_page())
@@ -153,9 +156,6 @@ def get_contest_info(url):
     ranklist_button.pack(side=LEFT, padx=10)
     
     button_frame.pack(side=TOP, fill=X)
-
-
-
     
     # print(cid)
     # print(encoded)

@@ -1,32 +1,31 @@
 import tkinter as tk
-from tkhtmlview import HTMLLabel
 
-def display_html_in_tkinter(html_content):
-    # Create a Tkinter window
-    window = tk.Tk()
-    window.title("HTML Display")
+data = [
+    ("232321", "A", "AC", "C++", "1000", "256", "256", "2023-09-01 10:00:00"),
+    ("223232", "B", "WA", "Python", "2000", "512", "512", "2023-09-01 10:05:00"),
+    ("323232", "C", "Time Limit Exceeded", "Java", "3000", "1024", "1024", "2023-09-01 10:10:00"),
+    # Add more rows as needed
+]
 
-    # Create an HTMLLabel to display the HTML content
-    html_label = HTMLLabel(window, html=html_content)
-    html_label.pack(fill="both", expand=True)
+def create_table(root, data):
+    for i, header in enumerate(["RunID", "ID", "JudgeStatus", "Language", "Time", "Memory", "Length", "SubmitTime"]):
+        label = tk.Label(root, text=header, font=("Arial", 12, "bold"))
+        label.grid(row=0, column=i, padx=5, pady=5, sticky="nsew")
 
-    # Start the Tkinter event loop
-    window.mainloop()
+    # for row_index, row_data in enumerate(data, start=1):
+    #     for col_index, cell_data in enumerate(row_data):
+    #         label = tk.Label(root, text=cell_data, font=("Arial", 12))
+    #         label.grid(row=row_index, column=col_index, padx=5, pady=5, sticky="nsew")
 
-if __name__ == "__main__":
-    # Example HTML content
-    html_content = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Sample HTML Page</title>
-    </head>
-    <body>
-        <h1>Hello, Tkinter with HTML!</h1>
-        <p>This is an example of displaying HTML in Tkinter.&1+1=2$</p>
-        <a href="https://www.example.com">Visit Example Website</a>
-    </body>
-    </html>
-    """
+    # # Configure row and column weights to expand with the window
+    # for i in range(len(data) + 1):  # +1 to include the header row
+    #     root.grid_rowconfigure(i, weight=1)
+    # for i in range(len(data[0])):  # Assuming all rows have the same number of columns
+    #     root.grid_columnconfigure(i, weight=1)
 
-    display_html_in_tkinter(html_content)
+root = tk.Tk()
+root.title("Data Table")
+
+create_table(root, data)
+
+root.mainloop()

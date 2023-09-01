@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-08-31 19:20:41
+LastEditTime: 2023-09-01 21:49:50
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -21,7 +21,8 @@ import json
 import base64
 from global_var import session
 import contest_problem_info as cpi
-from contest_page_status import get_status_info
+
+
 
 class Problems:
     def __init__(self):
@@ -87,14 +88,17 @@ def open_problems_page():
     pass
 
 def open_status_page(cid):
+    from contest_page_status import get_status_info
     # 在此处实现打开 Status 页面的逻辑
     get_status_info(url + "/contests/index.php?act=status&cid=" + str(cid))
 
 def open_statistics_page(cid):
+    from contest_page_statistics import get_statistics_info
     # 在此处实现打开 Statistics 页面的逻辑
-    pass
+    get_statistics_info(url + "/contests/index.php?act=statistics&cid=" + str(cid))
 
-def open_ranklist_page(url):
+def open_ranklist_page(cid):
+    from contest_page_ranklist import get_ranklist_info
     # 在此处实现打开 Ranklist 页面的逻辑
     pass
 
