@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:05:17
-LastEditTime: 2023-08-29 22:34:06
+LastEditTime: 2023-08-31 23:35:56
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -39,9 +39,17 @@ from tkinter import *
 from tkinter import ttk
 import contest_page as cp
 from global_var import session
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5
+import json
+import base64
 # session=requests.Session()
 
 url = "http://acm.hrbust.edu.cn"
+
+login_rsa_public_key = """-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC88fBRU1FaC5S537krMDVDapOZk44Nw+Yud69IPZYwk9HT0n6D7Pvp3mXp+Par6gp5HUW3tFs7/l3cTIqryEXMfJXRF7FlneM64kLs/KZ2i0larVrz7QgcTb5oAuHeIE24Uc0ja+S83Hlc2Dk6z1TWkAjG2f/p15xRfv/IO5yyywIDAQAB
+-----END PUBLIC KEY-----"""
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -67,37 +75,30 @@ class ojlist:
 
 f=open('hrbustoj.txt','w',encoding='utf-8')
 
-# url = "http://acm.hrbust.edu.cn"
+# 获取用户名和密码
+username = "2204010110"
+password = "087116"
 
-# session.get(url)
+# 加载RSA公钥
+public_key = RSA.import_key(login_rsa_public_key)
+# print(public_key.text)
+# 使用公钥加密用户名和密码
+cipher = PKCS1_v1_5.new(public_key)
+print(cipher)
+data = json.dumps({"user_name": username, "password": password}).encode('utf-8')
+print(data)
+encrypted = cipher.encrypt(data)
 
-# cookies = {
-#     'last_problem_vol': '16',
-# }
+# 将加密后的结果转换为base64编码的字符串
+encoded = base64.b64encode(encrypted).decode('ascii')
 
-# session.cookies.update(cookies)
+data = {
+    'm' : 'User',
+    'a' : 'login',
+    'encrypt' : encoded,
+    'ajax' : 1
+}
 
-# print(0,session.cookies)
-
-# headers = {
-#     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-#     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
-#     'Cache-Control': 'max-age=0',
-#     # 'Cookie': 'last_problem_vol=16; PHPSESSID=gfneklckpmd3dim8df0hb4m326',
-#     'Proxy-Connection': 'keep-alive',
-#     # 'Referer': 'http://acm.hrbust.edu.cn/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1',
-#     'Upgrade-Insecure-Requests': '1',
-#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
-# }
-
-# # params = {
-# #     'm': 'Contest',
-# #     'a': 'contestVolume',
-# #     'ctitle': '',
-# #     'ctype': '',
-# #     'cstate': '',
-# #     'page_id': '1',
-# # }
 
 def double_click_ojlist(list,ojlisturl):
     print("double click")
@@ -126,6 +127,8 @@ def get_url_text(page_id):
     response = session.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, headers=headers, verify=False)
     page_text = response.text #请求发送
     soup=BeautifulSoup(page_text,'lxml')
+    # print(page_text)
+
     content0="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td > a"
     content1="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row1 > td > a"
     select_access0 = "body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td:nth-child(3)"
@@ -192,6 +195,9 @@ def get_url_text(page_id):
 
 
 
+session.post(url + '/index.php?m=User&a=login', data=data, headers=headers, verify=False)
+# tt = session.get(url + '/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1', headers=headers, verify=False)
+# print(tt.text)
 
 get_url_text('1')
 # list.pack()

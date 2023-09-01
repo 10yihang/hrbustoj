@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-29 18:29:43
-LastEditTime: 2023-08-31 20:06:43
+LastEditTime: 2023-09-01 13:45:47
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -125,7 +125,7 @@ def get_problem_info(url):
         estimated_lines = calculate_required_lines(content_text, font_size=15, width=550)  # 请根据实际情况调整字体大小和宽度
         
         print(content_text)
-        text_widget = tk.Text(frame,wrap=tk.WORD, state='disabled',  font=("黑体",15), height=estimated_lines)
+        text_widget = tk.Text(frame,wrap=tk.WORD, state='disabled',  font=("黑体",15), height=estimated_lines, width=50)
         text_widget.configure(state='normal')
         text_widget.insert("insert", content_text)
         text_widget.configure(state='disabled')

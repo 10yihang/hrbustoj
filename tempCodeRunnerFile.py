@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-08-31 17:09:49
+LastEditTime: 2023-08-31 19:20:41
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -21,6 +21,7 @@ import json
 import base64
 from global_var import session
 import contest_problem_info as cpi
+from contest_page_status import get_status_info
 
 class Problems:
     def __init__(self):
@@ -47,7 +48,7 @@ headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Cache-Control': 'max-age=0',
     'Content-Type': 'application/x-www-form-urlencoded',
-    # 'Cookie': 'last_problem_vol=16; PHPSESSID=eghmt5akhu5hk4et6mhd01nri0',
+    # 'Cookie': 'last_problem_vol=16; PHPSESSID=ff176qecr535rfpi2uo19ss397',
     'Origin': 'http://acm.hrbust.edu.cn',
     'Proxy-Connection': 'keep-alive',
     # 'Referer': 'http://acm.hrbust.edu.cn/contests/index.php?act=login&cid=2085',
@@ -60,14 +61,11 @@ password = "087116"
 
 # 加载RSA公钥
 public_key = RSA.import_key(login_rsa_public_key)
-
 # print(public_key.text)
 # 使用公钥加密用户名和密码
 cipher = PKCS1_v1_5.new(public_key)
-
 # print(cipher)
 data = json.dumps({"username": username, "password": password}).encode('utf-8')
-
 # print(data)
 encrypted = cipher.encrypt(data)
 
@@ -84,6 +82,24 @@ a = Problems();b = Problems()
 # cookies = response.cookies
 print(1,session.cookies)
 
+def open_problems_page():
+    # 在此处实现打开 Problems 页面的逻辑
+    pass
+
+def open_status_page(cid):
+    # 在此处实现打开 Status 页面的逻辑
+    get_status_info(url + "/contests/index.php?act=status&cid=" + str(cid))
+
+def open_statistics_page(cid):
+    # 在此处实现打开 Statistics 页面的逻辑
+    pass
+
+def open_ranklist_page(url):
+    # 在此处实现打开 Ranklist 页面的逻辑
+    pass
+
+
+
 def goToproblem_info(list,contest_problemslist):
     global session
     print("double click")
@@ -95,7 +111,7 @@ def goToproblem_info(list,contest_problemslist):
         cpi.get_problem_info(url + '/contests/' + contest_problemslist[problem])
         # session.cookies.update(cookies)
         # cookies = session.cookies
-        # # print(cookies)
+        # print(cookies)
         # page = session.get(url + '/contests/' + contest_problemslist[problem], headers=headers, data=data)
         # print(page.text,file=f)
         # print(page.text)
@@ -106,15 +122,41 @@ def goToproblem_info(list,contest_problemslist):
 
 
 def get_contest_info(url):
+    window = tk.Tk()
+    window.title("hrbustoj_contest_info")
+    window.geometry("800x600+600+200")
     contest_problemslist={}
     global session
     print(2,session.cookies)
     url=url.replace("problems","login")
     # print(url)
-    window = tk.Tk()
-    window.title("hrbustoj_contest_info")
-    window.geometry("600x500+600+200")
     cid=url.split("cid=")[1]
+
+    button_frame = Frame(window)
+    # 创建四个按钮并添加到按钮框架
+    problems_button = Button(button_frame, text="Problems", command=lambda: open_problems_page())
+    status_button = Button(button_frame, text="Status", command=lambda: open_status_page(cid))
+    statistics_button = Button(button_frame, text="Statistics", command=lambda: open_statistics_page(cid))
+    ranklist_button = Button(button_frame, text="Ranklist", command=lambda: open_ranklist_page(url))
+    
+    # 设置按钮样式
+    button_style = ("Helvetica", 16)
+    problems_button.config(font=button_style)
+    status_button.config(font=button_style)
+    statistics_button.config(font=button_style)
+    ranklist_button.config(font=button_style)
+    
+    # 布局按钮
+    problems_button.pack(side=LEFT, padx=10)
+    status_button.pack(side=LEFT, padx=10)
+    statistics_button.pack(side=LEFT, padx=10)
+    ranklist_button.pack(side=LEFT, padx=10)
+    
+    button_frame.pack(side=TOP, fill=X)
+
+
+
+    
     # print(cid)
     # print(encoded)
     data = {
