@@ -45,7 +45,12 @@ def open_ranklist_page(url):
 def get_statistics_info(url):
     window = tk.Tk()
     window.title("Status")
-    window.geometry("800x600+600+200")
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - 1280) // 2
+    y = (screen_height - 800) // 2
+    # 设置窗口大小为全屏
+    window.geometry(f"1280x800+{x}+{y}")
     window.lift()  # 将窗口提到前台
     # window.attributes("-topmost", True)  # 确保窗口位于顶层
     window.focus_force()  # 强制窗口获得焦点
@@ -133,7 +138,7 @@ def get_statistics_info(url):
     for i, row in enumerate(data):
         for j, value in enumerate(row):
             label = tk.Label(header_frame, text=value, font=("Arial", 12))
-            label.grid(row=i+2, column=j, padx=2, pady=2, sticky="w")
+            label.grid(row=i+2, column=j, padx=5, pady=5, sticky="w")
 
     content_frame.update_idletasks()  # 更新content_frame以获取实际高度
     content_height = content_frame.winfo_height()

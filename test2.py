@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-27 11:23:54
-LastEditTime: 2023-08-30 20:49:12
+LastEditTime: 2023-09-02 22:10:28
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -30,9 +30,11 @@ headers = {
     'Sec-Fetch-Dest': 'document',
     'Accept-Language': 'zh-CN,zh;q=0.9',
 }
+
 params = (
     ('cate', 'realtimehot'),
 )
+
 #数据存储
 fo = open("./微博热搜.txt",'w',encoding="utf-8")
 #获取网页

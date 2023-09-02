@@ -128,7 +128,12 @@ def goToproblem_info(list,contest_problemslist):
 def get_contest_info(url):
     window = tk.Tk()
     window.title("hrbustoj_contest_info")
-    window.geometry("800x600+600+200")
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - 1280) // 2
+    y = (screen_height - 800) // 2
+    # 设置窗口大小为全屏
+    window.geometry(f"1280x800+{x}+{y}")
     contest_problemslist={}
     global session
     print(2,session.cookies)

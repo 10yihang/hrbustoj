@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-31 18:56:13
-LastEditTime: 2023-09-01 21:35:34
+LastEditTime: 2023-09-02 19:14:13
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -24,6 +24,9 @@ from tkinter import ttk
 
 url = "http://acm.hrbust.edu.cn"
 
+def set_text_color(item_id, column, color):
+    tree.item(item_id, tags=(color,))
+    tree.tag_configure(color, foreground=color)
 
 def refresh_window(url,window):
     window.destroy()
@@ -53,7 +56,12 @@ def open_ranklist_page(url):
 def get_status_info(url):
     window = tk.Tk()
     window.title("Status")
-    window.geometry("800x600+600+200")
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - 1280) // 2
+    y = (screen_height - 800) // 2
+    # 设置窗口大小为全屏
+    window.geometry(f"1280x800+{x}+{y}")
     window.lift()  # 将窗口提到前台
     # window.attributes("-topmost", True)  # 确保窗口位于顶层
     window.focus_force()  # 强制窗口获得焦点
@@ -119,7 +127,7 @@ def get_status_info(url):
     data=[]
     for i, header in enumerate(["RunID", "ID", "JudgeStatus", "Language", "Time", "Memory", "Length", "SubmitTime"]):
         label = Label(header_frame, text=header, font=("Arial", 12, "bold"))
-        label.grid(row=1, column=i, padx=2, pady=2, sticky="nsew")
+        label.grid(row=1, column=i, padx=5, pady=5, sticky="nsew")
     header_frame.grid(row=1, column=0, columnspan=5, sticky="ew")
 
     for i in range(len(total_status)):
@@ -142,8 +150,11 @@ def get_status_info(url):
 
     for i, row in enumerate(data):
         for j, value in enumerate(row):
-            label = tk.Label(header_frame, text=value, font=("Arial", 12))
-            label.grid(row=i+2, column=j, padx=2, pady=2, sticky="w")
+            if row[2]=="Accepted":
+                color = "green"
+            else: color = "red"
+            label = tk.Label(header_frame, text=value, font=("Arial", 12), fg=color)
+            label.grid(row=i+2, column=j, padx=5, pady=5, sticky="w")
 
     # content_frame.update_idletasks()  # 更新content_frame以获取实际高度
     # # content_height = content_frame.winfo_height()

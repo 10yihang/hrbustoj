@@ -1,31 +1,27 @@
+'''
+author: yihang_01
+Date: 2023-08-27 21:55:24
+LastEditTime: 2023-09-02 18:35:56
+Description: 爱自己最重要啦
+QwQ 加油加油
+'''
 import tkinter as tk
 
-data = [
-    ("232321", "A", "AC", "C++", "1000", "256", "256", "2023-09-01 10:00:00"),
-    ("223232", "B", "WA", "Python", "2000", "512", "512", "2023-09-01 10:05:00"),
-    ("323232", "C", "Time Limit Exceeded", "Java", "3000", "1024", "1024", "2023-09-01 10:10:00"),
-    # Add more rows as needed
-]
-
-def create_table(root, data):
-    for i, header in enumerate(["RunID", "ID", "JudgeStatus", "Language", "Time", "Memory", "Length", "SubmitTime"]):
-        label = tk.Label(root, text=header, font=("Arial", 12, "bold"))
-        label.grid(row=0, column=i, padx=5, pady=5, sticky="nsew")
-
-    # for row_index, row_data in enumerate(data, start=1):
-    #     for col_index, cell_data in enumerate(row_data):
-    #         label = tk.Label(root, text=cell_data, font=("Arial", 12))
-    #         label.grid(row=row_index, column=col_index, padx=5, pady=5, sticky="nsew")
-
-    # # Configure row and column weights to expand with the window
-    # for i in range(len(data) + 1):  # +1 to include the header row
-    #     root.grid_rowconfigure(i, weight=1)
-    # for i in range(len(data[0])):  # Assuming all rows have the same number of columns
-    #     root.grid_columnconfigure(i, weight=1)
+def set_text_color(text_widget, text, color):
+    text_widget.tag_configure(color, foreground=color)
+    text_widget.insert(tk.END, text, color)
+    text_widget.insert(tk.END, '\n')  # 换行
 
 root = tk.Tk()
-root.title("Data Table")
+root.title("Text Color Example")
+root.geometry("400x300")
 
-create_table(root, data)
+text_widget = tk.Text(root, wrap=tk.WORD)
+text_widget.pack()
+
+# 添加一些示例文本，包括不同状态的文本
+set_text_color(text_widget, "Accepted", "green")
+set_text_color(text_widget, "Unsolved", "gray")
+set_text_color(text_widget, "Attempted", "red")
 
 root.mainloop()

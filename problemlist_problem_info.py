@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-29 18:29:43
-LastEditTime: 2023-09-03 02:20:13
+LastEditTime: 2023-09-03 02:34:49
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -59,6 +59,12 @@ def calculate_required_lines(content, font_size, width):
 
     return required_lines
 
+def submit_problem(act,problem_id):
+    # global window
+    # window.destroy()
+    from submit import submit_code
+    submit_code(url + "/index.php?m=ProblemSet&" + act + "=submitCode&problem_id=" + str(problem_id) + '#')
+
 def on_mouse_wheel(event):
     global canvas
     canvas.yview_scroll(-1 * (event.delta // 120), "units")
@@ -70,7 +76,8 @@ def copy_text(text):
     window.update()
 
 def get_problem_info(url):
-    cid = url.split("cid=")[1]
+    # print(url)
+    problem_id = url.split("problem_id=")[1]
     page = session.get(url, headers=headers)
     soup = BeautifulSoup(page.text, 'html.parser')
     # print(page.text)
@@ -155,8 +162,8 @@ def get_problem_info(url):
         if  Description[i].text=="Sample Output" or Description[i].text == "Sample Input":
             copy_button.pack()
 
-    submit_button = ttk.Button(frame, text="Submit", command=lambda: submit_problem("act",cid))
-    submit_button.pack()
+    submit_button = ttk.Button(window, text="Submit", command=lambda: submit_problem("a",problem_id))
+    submit_button.pack(padx=10, pady=10)
     frame.update_idletasks()
     canvas.pack(fill=tk.BOTH, expand=True)
     # canvas_height = screen_height - 100

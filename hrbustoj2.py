@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:05:17
-LastEditTime: 2023-09-01 19:11:19
+LastEditTime: 2023-09-03 01:44:31
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -99,6 +99,11 @@ data = {
     'ajax' : 1
 }
 
+def get_problemlist(window):
+    from problemlist import goTo_problemlist
+    window.destroy()
+    goTo_problemlist('1')
+    
 
 def double_click_ojlist(list,ojlisturl):
     print("double click")
@@ -111,7 +116,13 @@ def double_click_ojlist(list,ojlisturl):
         cp.get_contest_info(url + '/' + ojlisturl[contest])
     else:
         print("No item selected")
-    
+
+def return_topage(window,page_id_text):
+    global page_id
+    page_id = page_id_text.get("1.0", "end-1c")
+    if page_id != "":
+        window.destroy()
+        get_url_text(page_id)   
     
 def get_url_text(page_id):
     global session
@@ -121,11 +132,26 @@ def get_url_text(page_id):
         if page_id != "":
             window.destroy()
             get_url_text(page_id)
-        
+    
+    
+
     a=ojlist();b=ojlist();ojlisturl={}
     window = tk.Tk()
     window.title("hrbustoj")
-    window.geometry("800x600+600+200")
+    # 获取屏幕的宽度和高度
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - 1280) // 2
+    y = (screen_height - 800) // 2
+    # 设置窗口大小为全屏
+    window.geometry(f"1280x800+{x}+{y}")
+    window.lift()  # 将窗口提到前台
+    button_frame = Frame(window)
+
+    problemlist_button = Button(button_frame, text="ProblemList", command = lambda: get_problemlist(window))
+    problemlist_button.pack(side=TOP)
+
+    
 
     response = session.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, headers=headers, verify=False)
     page_text = response.text #请求发送
@@ -185,15 +211,17 @@ def get_url_text(page_id):
             r+=1
 
 
-    page_id_text = tk.Text(window, height=1,width=20)
-    button1 = Button(window, text="goTO!", command = lambda: goTopage(window))
-    page_id_text.pack(side=TOP)
-    button1.pack(side=TOP)
-
+    page_id_text = tk.Text(button_frame, height=1,width=20)
+    page_id_text.focus_force()
+    button1 = Button(button_frame, text="goTO!", command = lambda: goTopage(window))
+    page_id_text.pack(side=tk.LEFT)
+    button1.pack(side=tk.LEFT)
+    button_frame.pack(fill=BOTH)
     list.bind("<Double-Button-1>", lambda event: double_click_ojlist(list,ojlisturl))
     list.pack(fill=BOTH)
-    page_id_text.bind('<Return>', lambda event: double_click_ojlist(list,ojlisturl))
+    page_id_text.bind('<Return>', lambda event: return_topage(window,page_id_text))
     scrollbar.config(command=list.yview)
+    
     window.mainloop()
 
 
