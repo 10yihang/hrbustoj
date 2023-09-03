@@ -1,7 +1,28 @@
 '''
 author: yihang_01
+Date: 2023-08-28 22:05:17
+LastEditTime: 2023-09-03 11:31:22
+Description: 爱自己最重要啦
+QwQ 加油加油
+'''
+'''
+author: yihang_01
+Date: 2023-08-28 22:05:17
+LastEditTime: 2023-08-29 22:32:24
+Description: 爱自己最重要啦
+QwQ 加油加油
+'''
+'''
+author: yihang_01
+Date: 2023-08-28 22:05:17
+LastEditTime: 2023-08-28 23:33:25
+Description: 爱自己最重要啦
+QwQ 加油加油
+'''
+'''
+author: yihang_01
 Date: 2023-08-26 22:45:05
-LastEditTime: 2023-08-29 16:47:05
+LastEditTime: 2023-08-28 23:07:40
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -16,36 +37,19 @@ from bs4 import BeautifulSoup
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-
-session = requests.Session()
-
-
-
-
-class ojlist:
-    def __init__(self):
-        self.name=BeautifulSoup()
-        self.url=BeautifulSoup()
-        self.time=BeautifulSoup()
-        self.status=BeautifulSoup()
-        self.access=BeautifulSoup()
-
-# window = tk.Tk()
-# window.title("hrbustoj")
-# window.geometry("600x400+600+200")
-# window.mainloop()
-
-
-
-f=open('hrbustoj.txt','w',encoding='utf-8')
+import contest_page as cp
+from global_var import session
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5
+import json
+import base64
+# session=requests.Session()
 
 url = "http://acm.hrbust.edu.cn"
 
-cookies = {
-    'last_problem_vol': '16',
-}
-
-session.cookies.update(cookies)
+login_rsa_public_key = """-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC88fBRU1FaC5S537krMDVDapOZk44Nw+Yud69IPZYwk9HT0n6D7Pvp3mXp+Par6gp5HUW3tFs7/l3cTIqryEXMfJXRF7FlneM64kLs/KZ2i0larVrz7QgcTb5oAuHeIE24Uc0ja+S83Hlc2Dk6z1TWkAjG2f/p15xRfv/IO5yyywIDAQAB
+-----END PUBLIC KEY-----"""
 
 headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -58,42 +62,102 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
 }
 
-# params = {
-#     'm': 'Contest',
-#     'a': 'contestVolume',
-#     'ctitle': '',
-#     'ctype': '',
-#     'cstate': '',
-#     'page_id': '1',
-# }
+class ojlist:
+    def __init__(self):
+        self.name=BeautifulSoup()
+        self.url=BeautifulSoup()
+        self.time=BeautifulSoup()
+        self.status=BeautifulSoup()
+        self.access=BeautifulSoup()
+
+
+
+
+f=open('hrbustoj.txt','w',encoding='utf-8')
+
+# 获取用户名和密码
+username = "2204010110"
+password = "087116"
+
+# 加载RSA公钥
+public_key = RSA.import_key(login_rsa_public_key)
+# print(public_key.text)
+# 使用公钥加密用户名和密码
+cipher = PKCS1_v1_5.new(public_key)
+print(cipher)
+data = json.dumps({"user_name": username, "password": password}).encode('utf-8')
+print(data)
+encrypted = cipher.encrypt(data)
+
+# 将加密后的结果转换为base64编码的字符串
+encoded = base64.b64encode(encrypted).decode('ascii')
+
+data = {
+    'm' : 'User',
+    'a' : 'login',
+    'encrypt' : encoded,
+    'ajax' : 1
+}
+
+def get_problemlist(window):
+    from problemlist import goTo_problemlist
+    window.destroy()
+    goTo_problemlist('1')
+    
 
 def double_click_ojlist(list,ojlisturl):
     print("double click")
+    # print(list)
     selection = list.curselection()
     if selection:
         index = selection[0]
         contest = list.get(index).split("    ")[1]
-        response = session.get(url + '/' + ojlisturl[contest], cookies=cookies, headers=headers, verify=False)
-        page_text = response.text #请求发送
-        soup=BeautifulSoup(page_text,'lxml')
-        print(soup)
-        problem_list=[]
+        # print(ojlisturl[contest])
+        cp.get_contest_info(url + '/' + ojlisturl[contest])
     else:
         print("No item selected")
-    
+
+def return_topage(window,page_id_text):
+    global page_id
+    page_id = page_id_text.get("1.0", "end-1c")
+    if page_id != "":
+        window.destroy()
+        get_url_text(page_id)   
     
 def get_url_text(page_id):
-    def goTopage():
+    global session
+    def goTopage(window):
         global page_id
         page_id = page_id_text.get("1.0", "end-1c")
-        get_url_text(page_id)
+        if page_id != "":
+            window.destroy()
+            get_url_text(page_id)
+    
+    
+
     a=ojlist();b=ojlist();ojlisturl={}
     window = tk.Tk()
     window.title("hrbustoj")
-    window.geometry("600x400+600+200")
+    # 获取屏幕的宽度和高度
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x = (screen_width - 1280) // 2
+    y = (screen_height - 800) // 2
+    # 设置窗口大小为全屏
+    window.geometry(f"1280x800+{x}+{y}")
+    window.lift()  # 将窗口提到前台
+    button_frame = Frame(window)
+
+    problemlist_button = Button(button_frame, text="ProblemList", command = lambda: get_problemlist(window))
+    problemlist_button.pack(side=TOP)
+
+    
+
     response = session.get(url + "/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=" + page_id, headers=headers, verify=False)
     page_text = response.text #请求发送
     soup=BeautifulSoup(page_text,'lxml')
+    # print(page_text)
+
     content0="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td > a"
     content1="body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row1 > td > a"
     select_access0 = "body > table.body_table > tr > td.right_table > table.ojlist > tr.ojlist-row0 > td:nth-child(3)"
@@ -124,11 +188,13 @@ def get_url_text(page_id):
         b.time[i] = b.time[i].text
         b.status[i] = b.status[i].text
         b.access[i] = b.access[i].text
+    
     l = 0;r = 0;
 
     scrollbar = Scrollbar(window)
     scrollbar.pack(side=RIGHT, fill=Y)
     list = Listbox(window, yscrollcommand=scrollbar.set, height=50)
+
     cnt = 0
     for i in range(0,len(a.name)+len(b.name)):
         if i%2==0:
@@ -144,24 +210,28 @@ def get_url_text(page_id):
             cnt+=1
             r+=1
 
-    page_id_text = tk.Text(window, height=2)
-    button1 = Button(window, text="goTo!", command = goTopage)
-    page_id_text.pack()
-    button1.pack()
 
+    page_id_text = tk.Text(button_frame, height=1,width=20)
+    page_id_text.focus_force()
+    button1 = Button(button_frame, text="goTO!", command = lambda: goTopage(window))
+    page_id_text.pack(side=tk.LEFT)
+    button1.pack(side=tk.LEFT)
+    button_frame.pack(fill=BOTH)
     list.bind("<Double-Button-1>", lambda event: double_click_ojlist(list,ojlisturl))
     list.pack(fill=BOTH)
+    page_id_text.bind('<Return>', lambda event: return_topage(window,page_id_text))
     scrollbar.config(command=list.yview)
+    
     window.mainloop()
 
 
-
-
-
-
 if __name__ == "__main__":
-    get_url_text('1')
+    
+    session.post(url + '/index.php?m=User&a=login', data=data, headers=headers, verify=False)
+    # tt = session.get(url + '/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1', headers=headers, verify=False)
+    # print(tt.text)
 
-# list.pack()
-# print(a)
-# document.querySelector("body > table.body_table > tbody > tr > td.right_table > table.ojlist > tbody > tr")
+    get_url_text('1')
+    # list.pack()
+    # print(a)
+    # document.querySelector("body > table.body_table > tbody > tr > td.right_table > table.ojlist > tbody > tr")

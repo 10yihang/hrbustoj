@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-09-01 22:58:19
-LastEditTime: 2023-09-03 01:20:58
+LastEditTime: 2023-09-03 22:22:55
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -48,11 +48,15 @@ def double_click_problemset(tree):
         # print(problem_url[title])
         get_problem_info(url + problem_url[title])
 
+def goTostatus():
+    from problemlist_status import get_status_info
+    get_status_info(url + "/index.php?m=Status&a=showStatus&status_vol=1","")
+
 def goTocontest():
     # print(1)
     global window
     window.destroy()
-    from hrbustoj2 import get_url_text
+    from hrbustoj import get_url_text
     get_url_text('1')
 
 def goTopage(cid):
@@ -74,7 +78,7 @@ def goTo_problemlist(cid):
     window.geometry(f"1280x800+{x}+{y}")
     window.lift()  # 将窗口提到前台
     window.focus_force()  # 强制窗口获得焦点 
-    window.columnconfigure(0, weight=3)
+    window.columnconfigure(0, weight=4)
     window.rowconfigure(0, weight=1)
     window.rowconfigure(1, weight=5)  # 新增行1
 
@@ -84,7 +88,7 @@ def goTo_problemlist(cid):
 
     frame = ttk.Frame(window)
     frame.grid(row=0, column=0, sticky="nsew")
-    frame.columnconfigure(0, weight=3)
+    frame.columnconfigure(0, weight=4)
     frame.rowconfigure(1, weight=1)
 
 
@@ -137,9 +141,12 @@ def goTo_problemlist(cid):
     contest_button = ttk.Button(frame, text="Contest", command=lambda: goTocontest())
     contest_button.grid(row=0, column=0, sticky="nsew")
 
+    status_button = ttk.Button(frame, text="Status", command=lambda: goTostatus())
+    status_button.grid(row=0, column=1, sticky="nsew")
+
     # 创建一个子框架
     text_frame = ttk.Frame(frame)
-    text_frame.grid(row=0, column=1, sticky="nsew")
+    text_frame.grid(row=0, column=2, sticky="nsew")
     text_frame.columnconfigure(0, weight=1)
     page_id_text = tk.Text(text_frame, height=1, width=20)
     page_id_text.grid(row=0, column=0, sticky="nsew")
@@ -150,10 +157,10 @@ def goTo_problemlist(cid):
 
     scrollbar = ttk.Scrollbar(frame, orient="vertical")
     scrollbar.config(command=tree.yview)
-    scrollbar.grid(row=1, column=3, sticky="ns")
+    scrollbar.grid(row=1, column=4, sticky="ns")
     
     tree.bind("<Double-Button-1>", lambda event: double_click_problemset(tree))
-    tree.grid(row=1, column=0, columnspan=2, sticky="nsew")
+    tree.grid(row=1, column=0, columnspan=3, sticky="nsew")
 
     window.mainloop()
 

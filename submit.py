@@ -26,30 +26,37 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
 }
 
-selected_language = tk.StringVar()
 
 def click_submit(source_code, problem_id):
+    global selected_language
     print(selected_language.get())
     # print(selected_language.get())
     # print(source_code)
     # print(problem_id)
-    data = {
-        'jumpUrl':'',
-        'language':2,
-        'source_code':source_code,
-        'problem_id':problem_id,
-    }
-    response = session.post("http://acm.hrbust.edu.cn/index.php?m=ProblemSet&a=postCode", data=data, headers=headers)
-    print(response.text)
+    if source_code != '': 
+        data = {
+            'jumpUrl':'',
+            'language':selected_language.get(),
+            'source_code':source_code,
+            'problem_id':problem_id,
+        }
+        response = session.post("http://acm.hrbust.edu.cn/index.php?m=ProblemSet&a=postCode", data=data, headers=headers)
+        print(response.text)
 
 def choose_language():
+    global selected_language
     print(selected_language.get())
+    # cd_language = selected_language.get()
 #2 1 3 6 4 7
 
 def submit_code(url):
     problem_id = url.split('problem_id=')[1].split('#')[0]
+    response = session.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = soup.find('text', id_="verify_code")
+    print(soup)
     window = tk.Tk()
-    window.title("hrbustoj")
+    window.title("Submit Code")
     # 获取屏幕的宽度和高度
     screen_width = window.winfo_screenwidth()
     screen_height = window.winfo_screenheight()
@@ -58,16 +65,19 @@ def submit_code(url):
     # 设置窗口大小为全屏
     window.geometry(f"1280x800+{x}+{y}")
     # selected_language.set("2")
-# 创建选项按钮，设置值和文本
+    # 创建选项按钮，设置值和文本
+
+    global selected_language
+    selected_language = tk.StringVar(master=window)
+    selected_language.set("2")
     languages = [("G++", "2"), ("GCC", "1"), ("JAVA", "3"), ("Python3", "6"), ("PHP", "4"), ("Haskell", "7")]
     for lang, value in languages:
         radio_button = tk.Radiobutton(window, text=lang, variable=selected_language, value=value, command=choose_language)
-        print(lang, value)
-        radio_button.pack(side = TOP)
-    
+        radio_button.pack(side=tk.TOP)
+
     text_widget = tk.Text(window, wrap=tk.WORD, font=("Arial", 12))
     text_widget.pack(fill=tk.BOTH, expand=True)
-
+    
     # 创建 "Submit" 按钮并设置其位置在屏幕下方
     submit_button = ttk.Button(window, text="Submit", command=lambda: click_submit(text_widget.get("1.0", "end-1c"), problem_id))
     submit_button.pack(side=tk.BOTTOM)
