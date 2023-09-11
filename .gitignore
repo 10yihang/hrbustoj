@@ -1,0 +1,12 @@
+*.html
+*.cmd
+*.txt
+*.spec
+*.exe
+github/
+__pycache__/
+@ Hrbust Online Judge_files/
+build/
+dist/
+hrbust.build/
+/launch.py
