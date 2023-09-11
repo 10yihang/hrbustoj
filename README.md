@@ -3,6 +3,9 @@
 格式为(每行之间没有空出来的一行)
 
 contest_username:xxx
+
 contest_password:xxx
+
 global_username:xxx
+
 global_password:xxx
