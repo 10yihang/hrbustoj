@@ -8,5 +8,5 @@ __pycache__/
 @ Hrbust Online Judge_files/
 build/
 dist/
-hrbust.build/
+hrbustoj.build/
 /launch.py
