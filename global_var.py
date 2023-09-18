@@ -5,8 +5,10 @@ from Crypto.Cipher import PKCS1_v1_5
 import json
 import base64
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QPushButton,QDesktopWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QPushButton, \
+    QDesktopWidget
 from PyQt5 import QtGui
+from bs4 import BeautifulSoup
 
 # 获取当前程序的目录
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -46,14 +48,14 @@ class LoginWindow(QMainWindow):
         size = self.geometry()
         newLeft = (screen.width() - size.width()) / 2
         newTop = (screen.height() - size.height()) / 2
-        self.move(int(newLeft),int(newTop))
+        self.move(int(newLeft), int(newTop))
 
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Login")
-        self.resize(400,200)
-        self.setWindowIcon(QtGui.QIcon(current_directory+"\img\\003.jpg"))
+        self.resize(400, 200)
+        self.setWindowIcon(QtGui.QIcon(current_directory + "\img\\003.jpg"))
 
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -100,6 +102,8 @@ class LoginWindow(QMainWindow):
             file.write(f"contest_password:{contest_password}\n")
 
         self.close()
+
+
 if os.path.exists(login_file_path):
     with open(login_file_path, "r") as file:
         # 逐行读取文件内容
@@ -132,7 +136,7 @@ print("Global Password:", global_password)
 
 session.cookies.update(cookies)
 
-print(0,session.cookies,"globals")
+print(0, session.cookies, "globals")
 
 login_rsa_public_key = """-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC88fBRU1FaC5S537krMDVDapOZk44Nw+Yud69IPZYwk9HT0n6D7Pvp3mXp+Par6gp5HUW3tFs7/l3cTIqryEXMfJXRF7FlneM64kLs/KZ2i0larVrz7QgcTb5oAuHeIE24Uc0ja+S83Hlc2Dk6z1TWkAjG2f/p15xRfv/IO5yyywIDAQAB
@@ -149,13 +153,15 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
 }
 
+
 class ojlist:
     def __init__(self):
-        self.name=BeautifulSoup()
-        self.url=BeautifulSoup()
-        self.time=BeautifulSoup()
-        self.status=BeautifulSoup()
-        self.access=BeautifulSoup()
+        self.name = BeautifulSoup()
+        self.url = BeautifulSoup()
+        self.time = BeautifulSoup()
+        self.status = BeautifulSoup()
+        self.access = BeautifulSoup()
+
 
 # f=open('hrbustoj.txt','w',encoding='utf-8')
 
@@ -175,10 +181,10 @@ encrypted = cipher.encrypt(data)
 encoded = base64.b64encode(encrypted).decode('ascii')
 
 data = {
-    'm' : 'User',
-    'a' : 'login',
-    'encrypt' : encoded,
-    'ajax' : 1
+    'm': 'User',
+    'a': 'login',
+    'encrypt': encoded,
+    'ajax': 1
 }
 
 # params = {

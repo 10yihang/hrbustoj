@@ -1,35 +1,30 @@
 import sys
-import requests
-from bs4 import BeautifulSoup
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QFormLayout, QHBoxLayout, QComboBox, QDesktopWidget, QAbstractItemView, QTreeView, QTreeWidgetItem, QTextEdit, QScrollBar,QHeaderView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt, pyqtSlot
+
 from PyQt5 import QtCore
 from PyQt5 import QtGui
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5
-import json
-import base64
-from global_var import session,headers,current_directory
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, \
+    QHBoxLayout, QComboBox, QDesktopWidget, QAbstractItemView, QHeaderView
+from bs4 import BeautifulSoup
+
+from global_var import session, headers, current_directory
 
 url = "http://acm.hrbust.edu.cn"
 
 
-
-
-
-def goTopage(page_id,search_text,search_com):
+def goTopage(page_id, search_text, search_com):
     if page_id:
-        params={
-            "a":"showProblemVolume",
-            "vol":page_id,
+        params = {
+            "a": "showProblemVolume",
+            "vol": page_id,
         }
     else:
-        params={
-            "a":"searchProblem",
-            "jumpUrl":"",
-            "conditions":search_text,
-            "search":search_com,
+        params = {
+            "a": "searchProblem",
+            "jumpUrl": "",
+            "conditions": search_text,
+            "search": search_com,
         }
     global window
     # print(params)
@@ -42,15 +37,16 @@ def goTopage(page_id,search_text,search_com):
 
     # goToProblemlist(params)
 
+
 class ProblemSetApp(QMainWindow):
     query_signal = QtCore.pyqtSignal(str, str, str)
+
     def __init__(self):
         super().__init__()
         # 设置窗口大小为全屏
-        self.resize(1280,800)
+        self.resize(1280, 800)
         self.setWindowTitle("HrBustOJ Problemset")
-        self.setWindowIcon(QtGui.QIcon(current_directory+"\img\\003.jpg"))
-
+        self.setWindowIcon(QtGui.QIcon(current_directory + "\img\\003.jpg"))
 
     def center(self):  # 定义一个函数使得窗口居中显示
         # 获取屏幕坐标系
@@ -59,9 +55,9 @@ class ProblemSetApp(QMainWindow):
         size = self.geometry()
         newLeft = (screen.width() - size.width()) / 2
         newTop = (screen.height() - size.height()) / 2
-        self.move(int(newLeft),int(newTop))
+        self.move(int(newLeft), int(newTop))
 
-    def initUI(self,params):
+    def initUI(self, params):
         self.volume = QLabel("Volume")
         self.volune_edit = QLineEdit()
         self.volune_edit.returnPressed.connect(self.onEnterPressed)
@@ -74,14 +70,12 @@ class ProblemSetApp(QMainWindow):
         self.search_combox.addItem("ID")
         self.search_combox.setItemData(self.search_combox.count() - 1, "1", role=Qt.UserRole)  # 设置关联值
         self.search_combox.addItem("Title")
-        self.search_combox.setItemData(self.search_combox.count() - 1, "0", role=Qt.UserRole)  
+        self.search_combox.setItemData(self.search_combox.count() - 1, "0", role=Qt.UserRole)
         self.search_combox.addItem("Author")
-        self.search_combox.setItemData(self.search_combox.count() - 1, "2", role=Qt.UserRole)  
+        self.search_combox.setItemData(self.search_combox.count() - 1, "2", role=Qt.UserRole)
         self.search_combox.addItem("Source")
-        self.search_combox.setItemData(self.search_combox.count() - 1, "3", role=Qt.UserRole)  
+        self.search_combox.setItemData(self.search_combox.count() - 1, "3", role=Qt.UserRole)
         self.search_combox.setCurrentIndex(0)  # 设置默认选项
-        
-
 
         self.contest_button = QPushButton("Contest")
         self.contest_button.clicked.connect(self.GoToContest_list)
@@ -120,9 +114,8 @@ class ProblemSetApp(QMainWindow):
         data = []
         problem_url = []
 
-
         # 获取题目列表
-        page = session.get(url + "/index.php?m=ProblemSet" , headers=headers, params = params)
+        page = session.get(url + "/index.php?m=ProblemSet", headers=headers, params=params)
         # print(page.text)
         soup = BeautifulSoup(page.text, 'html.parser')
         total_problem = soup.find_all('tr', class_=['problemset-row0', 'problemset-row1'])
@@ -132,8 +125,10 @@ class ProblemSetApp(QMainWindow):
             if img_elements:
                 first_img_element = img_elements[0]
                 solved = first_img_element.get('src')
-                if solved == "Public/images/ac.gif":    solved = "Accepted"
-                else:  solved = "Attempted"
+                if solved == "Public/images/ac.gif":
+                    solved = "Accepted"
+                else:
+                    solved = "Attempted"
             else:
                 # 如果没有找到img元素，可以设置一个默认值或者处理其他逻辑
                 solved = 'Unsolved'
@@ -150,7 +145,7 @@ class ProblemSetApp(QMainWindow):
             #     elif solved == "Public/images/wa.gif":  solved = "attempt"
             # else:
             #     solved = "Unsolved"
-            
+
             cnt = 0
             for j in range(len(rating_img)):
                 if rating_img[j].get('src') == 'Public/images/star-solid.png':
@@ -159,14 +154,13 @@ class ProblemSetApp(QMainWindow):
                     cnt += 0.5
             rating_img = str(cnt)
 
+            data.append([solved, problem_id, title, rating_img, r_as, ur_as])
 
-            data.append([solved,problem_id,title,rating_img,r_as,ur_as])
-        
         for row_data in data:
             row_items = [QStandardItem(item) for item in row_data]
             self.model.appendRow(row_items)
 
-        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers) # 只可读
+        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 只可读
         self.table_view.setModel(self.model)
         for row_index in range(self.model.rowCount()):
             state_item = self.model.item(row_index, 0)  # 第1列（State）
@@ -194,23 +188,23 @@ class ProblemSetApp(QMainWindow):
         # print(1)
 
         # # 手动设置每一列的宽度
-        # self.table_view.setColumnWidth(0, 500)  
-        # self.table_view.setColumnWidth(1, 300)  
-        # self.table_view.setColumnWidth(2, 200)  
-        # self.table_view.setColumnWidth(3, 200)  
+        # self.table_view.setColumnWidth(0, 500)
+        # self.table_view.setColumnWidth(1, 300)
+        # self.table_view.setColumnWidth(2, 200)
+        # self.table_view.setColumnWidth(3, 200)
         # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.table_view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents) #自适应
+        self.table_view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)  # 自适应
         self.table_view.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
         self.table_view.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeToContents)
 
         # 设置其他列占满剩余空间
-        for column in [2,4,5]:
+        for column in [2, 4, 5]:
             self.table_view.horizontalHeader().setSectionResizeMode(column, QHeaderView.Stretch)
         self.volune_edit.setFocus()
 
         self.table_view.doubleClicked.connect(self.GoToproblem)
 
-    def GoToproblem(self,index):
+    def GoToproblem(self, index):
         from problemlist_problem_info import goTopage
         # print(index.row())
         global problem_url
@@ -219,18 +213,19 @@ class ProblemSetApp(QMainWindow):
 
     def perform_query(self):
         # 在此处执行查询操作，根据文本框中的内容过滤数据
-        
-        self.query_signal.emit(self.volune_edit.text(), self.search_edit.text(), self.search_combox.currentData(role=Qt.UserRole))
+
+        self.query_signal.emit(self.volune_edit.text(), self.search_edit.text(),
+                               self.search_combox.currentData(role=Qt.UserRole))
 
     def GoToContest_list(self):
         from hrbustoj import main
         global window
         window.close()
-        params={
-            "ctitle":"",
-            "ctype":"",
-            "cstate":"",
-            "page_id":"1"
+        params = {
+            "ctitle": "",
+            "ctype": "",
+            "cstate": "",
+            "page_id": "1"
         }
         main(params)
 
@@ -242,11 +237,11 @@ class ProblemSetApp(QMainWindow):
 
     def GoToGlobal_Rating(self):
         from problemlist_rating import goTopage
-        params={
-            "m":"Ranklist",
-            "a":"showRatingrank",
-            "page_id":"1",
-            "name":""
+        params = {
+            "m": "Ranklist",
+            "a": "showRatingrank",
+            "page_id": "1",
+            "name": ""
         }
         global window
         window.close()
@@ -254,17 +249,18 @@ class ProblemSetApp(QMainWindow):
 
     def GoToGlobal_status(self):
         from problemlist_status import goTostatus
-        params={
-            "problem_id":"",
-            "user_name":"",
-            "judge_status":"0",
-            "language":"0",
-            "shared":"0",
-            "status_vol":"1"
+        params = {
+            "problem_id": "",
+            "user_name": "",
+            "judge_status": "0",
+            "language": "0",
+            "shared": "0",
+            "status_vol": "1"
         }
         global window
         window.close()
         goTostatus(params)
+
 
 def goToProblemlist(params):
     # from hrbustoj import app
@@ -276,13 +272,14 @@ def goToProblemlist(params):
     window.query_signal.connect(goTopage)
     # sys.exit(app.exec_())
 
-if __name__ == '__main__':
 
-    params={
-        "a":"showProblemVolume",
-        "vol":"16"
+if __name__ == '__main__':
+    params = {
+        "a": "showProblemVolume",
+        "vol": "16"
     }
     app = QApplication(sys.argv)
-    # session.post(url + "/index.php?m=ProblemSet&a=showProblemVolume&vol=" + "cid",data=data,headers=headers,params=params)
+    # session.post(url + "/index.php?m=ProblemSet&a=showProblemVolume&vol=" + "cid",data=data,headers=headers,
+    # params=params)
     goToProblemlist(params)
     sys.exit(app.exec_())

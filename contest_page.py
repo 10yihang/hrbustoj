@@ -1,26 +1,27 @@
-'''
+"""
 author: yihang_01
 Date: 2023-08-28 22:39:44
 LastEditTime: 2023-09-17 00:59:05
 Description: 爱自己最重要啦
 QwQ 加油加油
-'''
+"""
+import base64
+import json
 import sys
-import requests
-from bs4 import BeautifulSoup
-from global_var import session, headers
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit,QFormLayout,QHBoxLayout,QComboBox,QDesktopWidget,QAbstractItemView,QHeaderView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPalette, QColor
-from PyQt5.uic import loadUi
-from PyQt5.QtCore import Qt
+
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from PyQt5 import QtCore
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5
-import json
-import base64
-from global_var import contest_password,contest_username,current_directory
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem, QPalette, QColor
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, \
+    QHBoxLayout, QDesktopWidget, QAbstractItemView, QHeaderView
+from bs4 import BeautifulSoup
+
+from global_var import contest_password, contest_username, current_directory
+from global_var import session, headers
 
 url = "http://acm.hrbust.edu.cn"
 
@@ -41,6 +42,7 @@ encrypted = cipher.encrypt(data)
 # 将加密后的结果转换为base64编码的字符串
 encoded = base64.b64encode(encrypted).decode('ascii')
 
+
 class Problems:
     def __init__(self):
         self.solve = ""
@@ -51,18 +53,20 @@ class Problems:
         self.title = ""
         self.ID = ""
 
+
 class ContestInfoApp(QMainWindow):
     query_signal = QtCore.pyqtSignal(str, str, str, str)
+
     def __init__(self):
         super().__init__()
         # 设置窗口大小为全屏
         self.setWindowTitle("hrbustoj")
-        self.resize(1280,800)
+        self.resize(1280, 800)
         self.setWindowTitle("HrBustOJ Contest")
-        self.setWindowIcon(QtGui.QIcon(current_directory+"\img\\003.jpg"))
+        self.setWindowIcon(QtGui.QIcon(current_directory + "\img\\003.jpg"))
 
         # 创建一个数据模型..
-    
+
     def center(self):  # 定义一个函数使得窗口居中显示
         # 获取屏幕坐标系
         screen = QDesktopWidget().screenGeometry()
@@ -70,9 +74,9 @@ class ContestInfoApp(QMainWindow):
         size = self.geometry()
         newLeft = (screen.width() - size.width()) / 2
         newTop = (screen.height() - size.height()) / 2
-        self.move(int(newLeft),int(newTop))
-    
-    def initUI(self,params,cid):
+        self.move(int(newLeft), int(newTop))
+
+    def initUI(self, params, cid):
         self.problem_button = QPushButton("Problems")
         self.status_button = QPushButton("Status")
         self.statistics_button = QPushButton("Statistics")
@@ -80,13 +84,13 @@ class ContestInfoApp(QMainWindow):
 
         com_layout = QHBoxLayout()
         com_layout.addWidget(self.problem_button)
-        self.problem_button.clicked.connect(lambda:self.GoToproblemslist(cid))
+        self.problem_button.clicked.connect(lambda: self.GoToproblemslist(cid))
         com_layout.addWidget(self.status_button)
-        self.status_button.clicked.connect(lambda:self.GoTostatus(cid))
+        self.status_button.clicked.connect(lambda: self.GoTostatus(cid))
         com_layout.addWidget(self.statistics_button)
-        self.statistics_button.clicked.connect(lambda:self.Gotostastics(cid))
+        self.statistics_button.clicked.connect(lambda: self.Gotostastics(cid))
         com_layout.addWidget(self.ranklist_button)
-        self.ranklist_button.clicked.connect(lambda:self.Gotoranklist(cid))
+        self.ranklist_button.clicked.connect(lambda: self.Gotoranklist(cid))
 
         self.problem_button.setFixedHeight(50)
         self.status_button.setFixedHeight(50)
@@ -110,7 +114,6 @@ class ContestInfoApp(QMainWindow):
         self.start_time.setPalette(palette)
         self.finish_time.setPalette(palette)
 
-
         self.prob_title.setAlignment(Qt.AlignCenter)
         self.prob_title.setFont(QtGui.QFont("Roman times", 20, QtGui.QFont.Bold))
         self.start_time.setAlignment(Qt.AlignCenter)
@@ -121,7 +124,7 @@ class ContestInfoApp(QMainWindow):
         self.table_view = QTableView()
         self.model = QStandardItemModel()
         self.model.setColumnCount(5)
-        self.model.setHorizontalHeaderLabels(["Solved", "ID", "Title", "R(A/s)","UR(UA/US)"])
+        self.model.setHorizontalHeaderLabels(["Solved", "ID", "Title", "R(A/s)", "UR(UA/US)"])
         global problem_url
         data = []
         problem_url = []
@@ -130,16 +133,16 @@ class ContestInfoApp(QMainWindow):
             'password': "",
             'encrypt': encoded,
             'jump_url': "",
-            'cid' : cid
+            'cid': cid
         }
         page = session.post(url + "/contests/index.php", headers=headers, params=params, data=_data)
         # print(page.text)
         # print(_data)
         soup = BeautifulSoup(page.text, "html.parser")
-        ojtitle = soup.find_all("td",class_="ojtitle")[0].text
+        ojtitle = soup.find_all("td", class_="ojtitle")[0].text
         # print(ojtitle)
         self.prob_title.setText(ojtitle)
-        time = soup.find_all("td",class_="contest_time_info")
+        time = soup.find_all("td", class_="contest_time_info")
         self.start_time.setText(time[0].text)
         self.finish_time.setText(time[1].text)
         total_problem = soup.find_all("tr", class_=['problemset-row0', 'problemset-row1'])
@@ -149,10 +152,14 @@ class ContestInfoApp(QMainWindow):
             # print(tds)
             if tds[0].find("img"):
                 solved = tds[0].find("img").get('src')
-                if solved == "images/ac.gif":   solved = "√"
-                elif solved == "images/unac.gif": solved = "x"
-                else: solved=""
-            else: solved = ""
+                if solved == "images/ac.gif":
+                    solved = "√"
+                elif solved == "images/unac.gif":
+                    solved = "x"
+                else:
+                    solved = ""
+            else:
+                solved = ""
 
             id = tds[1].text
             title = tds[2].text
@@ -163,13 +170,12 @@ class ContestInfoApp(QMainWindow):
             data.append([solved, id, title, r, ur])
         # print(data)
         # print(problem_url)
-        
+
         for row_data in data:
             row_items = [QStandardItem(item) for item in row_data]
             self.model.appendRow(row_items)
-        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers) # 只可读
+        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 只可读
         self.table_view.setModel(self.model)
-            
 
         main_layout = QVBoxLayout()
         main_layout.addLayout(com_layout)
@@ -183,54 +189,54 @@ class ContestInfoApp(QMainWindow):
         self.setCentralWidget(container)
         # print(1)
 
-        self.table_view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents) #自适应
-        self.table_view.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents) #自适应
-
+        self.table_view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)  # 自适应
+        self.table_view.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)  # 自适应
 
         # 设置其他列占满剩余空间
-        for column in [2,3,4]:
+        for column in [2, 3, 4]:
             self.table_view.horizontalHeader().setSectionResizeMode(column, QHeaderView.Stretch)
-        
+
         self.table_view.doubleClicked.connect(self.GoToproblem)
 
-    def GoToproblem(self,index):
+    def GoToproblem(self, index):
         from contest_problem_info import goTopage
         # print(index.row())
         global problem_url
         # print(problem_url[index.row()])
         goTopage(problem_url[index.row()])
 
-    def GoToproblemslist(self,cid):
+    def GoToproblemslist(self, cid):
         pass
 
-    def GoTostatus(self,cid):
+    def GoTostatus(self, cid):
         from contest_page_status import goTopage
         global window
         window.close()
         goTopage(cid)
 
-
-    def Gotostastics(self,cid):
+    def Gotostastics(self, cid):
         from contest_page_statistics import goTopage
         global window
         window.close()
         goTopage(cid)
 
-    def Gotoranklist(self,cid):
+    def Gotoranklist(self, cid):
         pass
 
-def goTopage(params,cid):
+
+def goTopage(params, cid):
     global window
     window = ContestInfoApp()
-    window.initUI(params,cid)
+    window.initUI(params, cid)
     window.center()
     window.show()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     params = {
-        "act":"login",
-        "cid":"2085"
+        "act": "login",
+        "cid": "2085"
     }
-    goTopage(params,"2085")
+    goTopage(params, "2085")
     sys.exit(app.exec_())
