@@ -1,38 +1,38 @@
-'''
+"""
 author: yihang_01
 Date: 2023-08-31 18:56:13
 LastEditTime: 2023-09-16 11:28:33
 Description: 爱自己最重要啦
 QwQ 加油加油
-'''
-from global_var import session,current_directory
-# from contest_page_test import session
-from global_var import headers
+"""
 # from contest_page_status import get_status_info
-from lxml import etree
-import requests
 import sys
-from fake_useragent import UserAgent
-from bs4 import BeautifulSoup
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit,QFormLayout,QHBoxLayout,QComboBox,QDesktopWidget,QAbstractItemView,QHeaderView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.uic import loadUi
-from PyQt5.QtCore import Qt
-from PyQt5 import QtCore
+
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, \
+    QHBoxLayout, QDesktopWidget, QAbstractItemView, QHeaderView
+from bs4 import BeautifulSoup
+
+# from contest_page_test import session
+from global_var import headers
+from global_var import session, current_directory
+
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 url = "http://acm.hrbust.edu.cn"
+
 
 class ContestStatisticApp(QMainWindow):
     def __init__(self):
         super().__init__()
         # 设置窗口大小为全屏
         self.setWindowTitle("hrbustoj")
-        self.resize(1280,800)
+        self.resize(1280, 800)
         self.setWindowTitle("HrBustOJ Contest Status")
-        self.setWindowIcon(QtGui.QIcon(current_directory+"\img\\003.jpg"))
+        self.setWindowIcon(QtGui.QIcon(current_directory + "\img\\003.jpg"))
         # 创建一个数据模型..
 
     def center(self):  # 定义一个函数使得窗口居中显示
@@ -42,9 +42,9 @@ class ContestStatisticApp(QMainWindow):
         size = self.geometry()
         newLeft = (screen.width() - size.width()) / 2
         newTop = (screen.height() - size.height()) / 2
-        self.move(int(newLeft),int(newTop))
-    
-    def initUI(self,cid):
+        self.move(int(newLeft), int(newTop))
+
+    def initUI(self, cid):
         self.problem_button = QPushButton("Problems")
         self.status_button = QPushButton("Status")
         self.statistics_button = QPushButton("Statistics")
@@ -52,13 +52,13 @@ class ContestStatisticApp(QMainWindow):
 
         com_layout = QHBoxLayout()
         com_layout.addWidget(self.problem_button)
-        self.problem_button.clicked.connect(lambda:self.GoToproblems(cid))
+        self.problem_button.clicked.connect(lambda: self.GoToproblems(cid))
         com_layout.addWidget(self.status_button)
-        self.status_button.clicked.connect(lambda:self.GoTostatus(cid))
+        self.status_button.clicked.connect(lambda: self.GoTostatus(cid))
         com_layout.addWidget(self.statistics_button)
-        self.statistics_button.clicked.connect(lambda:self.Gotostastics(cid))
+        self.statistics_button.clicked.connect(lambda: self.Gotostastics(cid))
         com_layout.addWidget(self.ranklist_button)
-        self.ranklist_button.clicked.connect(lambda:self.Gotoranklist(cid))
+        self.ranklist_button.clicked.connect(lambda: self.Gotoranklist(cid))
 
         self.problem_button.setFixedHeight(50)
         self.status_button.setFixedHeight(50)
@@ -69,7 +69,7 @@ class ContestStatisticApp(QMainWindow):
 
         # 创建一个QPalette对象
         palette = QtGui.QPalette()
-        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor(26,92,200))
+        palette.setColor(QtGui.QPalette.WindowText, QtGui.QColor(26, 92, 200))
         # 应用QPalette到QLabel
         self.status_title.setPalette(palette)
 
@@ -80,16 +80,17 @@ class ContestStatisticApp(QMainWindow):
         self.table_view = QTableView()
         self.model = QStandardItemModel()
         self.model.setColumnCount(15)
-        self.model.setHorizontalHeaderLabels(["ProbID","AC","PE","TLE","MLE","WA","OLE","CE","RE","RF","SE","Total","GCC","G++","JAVA"])
+        self.model.setHorizontalHeaderLabels(
+            ["ProbID", "AC", "PE", "TLE", "MLE", "WA", "OLE", "CE", "RE", "RF", "SE", "Total", "GCC", "G++", "JAVA"])
 
-        data=[]
+        data = []
         page = session.get(url + "/contests/index.php?act=statistics&cid=" + str(cid), headers=headers)
         # print(page.text)
         soup = BeautifulSoup(page.text, 'html.parser')
-        title = soup.find("td",class_="ojtitle").text.strip()
+        title = soup.find("td", class_="ojtitle").text.strip()
         self.status_title.setText(title)
         # print(title)
-        total_statistics = soup.find_all("tr", class_=["ojlist-row0","ojlist-row1"])
+        total_statistics = soup.find_all("tr", class_=["ojlist-row0", "ojlist-row1"])
 
         for i in range(len(total_statistics)):
             tds = total_statistics[i].find_all("td")
@@ -108,12 +109,12 @@ class ContestStatisticApp(QMainWindow):
             gcc = tds[12].text.strip()
             gpp = tds[13].text.strip()
             java = tds[14].text.strip()
-            data.append([prob_id,ac,pe,tle,mle,wa,ole,ce,re,rf,se,total,gcc,gpp,java])
-        
+            data.append([prob_id, ac, pe, tle, mle, wa, ole, ce, re, rf, se, total, gcc, gpp, java])
+
         for row_data in data:
             row_items = [QStandardItem(item) for item in row_data]
             self.model.appendRow(row_items)
-        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers) # 只可读
+        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 只可读
         self.table_view.setModel(self.model)
 
         main_layout = QVBoxLayout()
@@ -125,33 +126,30 @@ class ContestStatisticApp(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
 
-
-
         self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
-
-    def GoToproblems(self,cid):
+    def GoToproblems(self, cid):
         from contest_page import goTopage
         global window
         window.close()
         params = {
-            "act":"problems",
-            "cid":cid
+            "act": "problems",
+            "cid": cid
         }
-        goTopage(params,cid)
+        goTopage(params, cid)
 
-
-    def GoTostatus(self,cid):
+    def GoTostatus(self, cid):
         from contest_page_status import goTopage
         global window
         window.close()
         goTopage(cid)
 
-    def Gotostastics(self,cid):
+    def Gotostastics(self, cid):
         pass
 
-    def Gotoranklist(self,cid):
+    def Gotoranklist(self, cid):
         pass
+
 
 def goTopage(cid):
     global window
@@ -159,6 +157,7 @@ def goTopage(cid):
     window.initUI(cid)
     window.center()
     window.show()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -1,36 +1,29 @@
-'''
+"""
 author: yihang_01
 Date: 2023-09-13 19:02:30
 LastEditTime: 2023-09-17 19:10:11
 Description: 爱自己最重要啦
 QwQ 加油加油
-'''
-'''
-author: yihang_01
-Date: 2023-08-26 22:45:05
-LastEditTime: 2023-09-13 20:54:25
-Description: 爱自己最重要啦
-QwQ 加油加油
-'''
-import sys
-import requests
+"""
+import base64
+import ctypes
+import json
 import os
-from lxml import etree
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit,QFormLayout,QHBoxLayout,QComboBox,QDesktopWidget,QAbstractItemView,QHeaderView
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
-from PyQt5.uic import loadUi
-from PyQt5.QtCore import Qt
+import sys
+
+from Crypto.Cipher import PKCS1_v1_5
+from Crypto.PublicKey import RSA
 from PyQt5 import QtCore
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, \
+    QHBoxLayout, QComboBox, QDesktopWidget, QAbstractItemView, QHeaderView
 from bs4 import BeautifulSoup
-import contest_page as cp
+
 from global_var import session, global_username, global_password
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_v1_5
-import json
-import base64
-import ctypes
+
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
 
 # session=requests.Session()
@@ -45,26 +38,31 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC88fBRU1FaC5S537krMDVDapOZk44Nw+Yud69IPZYw
 -----END PUBLIC KEY-----"""
 
 headers = {
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,'
+              'application/signed-exchange;v=b3;q=0.7',
     'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6',
     'Cache-Control': 'max-age=0',
     # 'Cookie': 'last_problem_vol=16; PHPSESSID=gfneklckpmd3dim8df0hb4m326',
     'Proxy-Connection': 'keep-alive',
     # 'Referer': 'http://acm.hrbust.edu.cn/index.php?m=Contest&a=contestVolume&ctitle=&ctype=&cstate=&page_id=1',
     'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.54',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 '
+                  'Safari/537.36 Edg/116.0.1938.54',
 }
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
+
+
 # print(current_directory)
 
 class ojlist:
     def __init__(self):
-        self.name=BeautifulSoup()
-        self.url=BeautifulSoup()
-        self.time=BeautifulSoup()
-        self.status=BeautifulSoup()
-        self.access=BeautifulSoup()
+        self.name = BeautifulSoup()
+        self.url = BeautifulSoup()
+        self.time = BeautifulSoup()
+        self.status = BeautifulSoup()
+        self.access = BeautifulSoup()
+
 
 # f=open('hrbustoj.txt','w',encoding='utf-8')
 
@@ -84,20 +82,21 @@ encrypted = cipher.encrypt(data)
 encoded = base64.b64encode(encrypted).decode('ascii')
 
 data = {
-    'm' : 'User',
-    'a' : 'login',
-    'encrypt' : encoded,
-    'ajax' : 1
+    'm': 'User',
+    'a': 'login',
+    'encrypt': encoded,
+    'ajax': 1
 }
 
-def goTopage(page_id,ctitle,ctype,cstate):
-    if page_id =="":
-        page_id=="1"
-    params={
-        "page_id":page_id,
-        "ctitle":ctitle,
-        "ctype":ctype,
-        "cstate":cstate
+
+def goTopage(page_id, ctitle, ctype, cstate):
+    if page_id == "":
+        page_id == "1"
+    params = {
+        "page_id": page_id,
+        "ctitle": ctitle,
+        "ctype": ctype,
+        "cstate": cstate
     }
     global window
     window.close()
@@ -107,15 +106,17 @@ def goTopage(page_id,ctitle,ctype,cstate):
     # print(params)
     # main(params)
 
+
 class ContestApp(QMainWindow):
     query_signal = QtCore.pyqtSignal(str, str, str, str)
+
     def __init__(self):
         super().__init__()
         # 设置窗口大小为全屏
         self.setWindowTitle("hrbustoj")
-        self.resize(1280,800)
+        self.resize(1280, 800)
         self.setWindowTitle("HrBustOJ Contest")
-        self.setWindowIcon(QtGui.QIcon(current_directory+"\img\\003.jpg"))
+        self.setWindowIcon(QtGui.QIcon(current_directory + "\img\\003.jpg"))
         # print(current_directory+"\img\\001.ico")
         # self.setWindowIcon(QtGui.QIcon("./img/001.ico"))
 
@@ -131,9 +132,9 @@ class ContestApp(QMainWindow):
         size = self.geometry()
         newLeft = (screen.width() - size.width()) / 2
         newTop = (screen.height() - size.height()) / 2
-        self.move(int(newLeft),int(newTop))
+        self.move(int(newLeft), int(newTop))
 
-    def initUI(self,params):
+    def initUI(self, params):
         # 创建标题、访问和状态的查询文本框以及"查询"按钮
         self.title_label = QLabel("Title:")
         self.access_label = QLabel("Access:")
@@ -163,7 +164,6 @@ class ContestApp(QMainWindow):
         self.query_button = QPushButton("查询")
         self.query_button.clicked.connect(self.perform_query)
 
-
         self.contest_button = QPushButton("Contest")
         self.problem_button = QPushButton("Problem")
         self.problem_button.clicked.connect(self.GoToProblem_list)
@@ -184,7 +184,6 @@ class ContestApp(QMainWindow):
         com_layout.addWidget(self.rating_button)
         com_layout.addWidget(self.status_button)
 
-
         top_layout = QHBoxLayout()
         top_layout.addWidget(self.title_label)
         top_layout.addWidget(self.title_edit)
@@ -202,15 +201,15 @@ class ContestApp(QMainWindow):
         self.model.setColumnCount(4)
         self.model.setHorizontalHeaderLabels(["Contest Title", "Start Time", "Access", "State"])
 
-        page = session.post(url+"/index.php?m=Contest&a=contestVolume",params=params)
+        page = session.post(url + "/index.php?m=Contest&a=contestVolume", params=params)
         # print(page.text)
         soup = BeautifulSoup(page.text, 'html.parser')
 
-        contest=soup.find_all("tr",class_=["ojlist-row0","ojlist-row1"])
+        contest = soup.find_all("tr", class_=["ojlist-row0", "ojlist-row1"])
 
         global contest_url
-        contest_url={}
-        data=[]    
+        contest_url = {}
+        data = []
 
         # 添加数据到模型...
         for i in range(len(contest)):
@@ -220,12 +219,12 @@ class ContestApp(QMainWindow):
             access = tds[2].text.strip()
             state = tds[3].text.strip()
             contest_url[title] = tds[0].find('a').get('href')
-            data.append([title,time,access,state])
+            data.append([title, time, access, state])
 
         for row_data in data:
             row_items = [QStandardItem(item) for item in row_data]
             self.model.appendRow(row_items)
-        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers) # 只可读
+        self.table_view.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 只可读
         self.table_view.setModel(self.model)
         for row_index in range(self.model.rowCount()):
             state_item = self.model.item(row_index, 3)  # 第四列（State）
@@ -239,9 +238,6 @@ class ContestApp(QMainWindow):
                     state_item.setForeground(QtGui.QColor(Qt.black))
         self.table_view.doubleClicked.connect(self.GoToproblem_info)
 
-
-
-
         # # 创建一个主布局管理器，将表单部件和表格视图垂直排列
         main_layout = QVBoxLayout()
         main_layout.addLayout(com_layout)
@@ -253,10 +249,10 @@ class ContestApp(QMainWindow):
         container.setLayout(main_layout)
         self.setCentralWidget(container)
         # # 手动设置每一列的宽度
-        # self.table_view.setColumnWidth(0, 500)  
-        # self.table_view.setColumnWidth(1, 300)  
-        # self.table_view.setColumnWidth(2, 200)  
-        # self.table_view.setColumnWidth(3, 200)  
+        # self.table_view.setColumnWidth(0, 500)
+        # self.table_view.setColumnWidth(1, 300)
+        # self.table_view.setColumnWidth(2, 200)
+        # self.table_view.setColumnWidth(3, 200)
         # self.table_view.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         # 设置第一列自适应内容
         self.table_view.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
@@ -265,9 +261,6 @@ class ContestApp(QMainWindow):
         for column in range(1, self.table_view.model().columnCount()):
             self.table_view.horizontalHeader().setSectionResizeMode(column, QHeaderView.Stretch)
         self.page_edit.setFocus()
-
-
-
 
     def perform_query(self):
         # 在此处执行查询操作，根据文本框中的内容过滤数据
@@ -287,35 +280,35 @@ class ContestApp(QMainWindow):
         global contest_url
         # print(contest_url[name])
         cid = contest_url[name].split("cid=")[1]
-        params={
-            "act":"login",
-            "cid":cid
+        params = {
+            "act": "login",
+            "cid": cid
         }
-        goTopage(params,cid)
+        goTopage(params, cid)
 
     def GoToContest_list(self):
         pass
 
     def GoToProblem_list(self):
         from problemlist import goToProblemlist
-        params={
-            "a":"showProblemVolume",
-            "vol":"1"
+        params = {
+            "a": "showProblemVolume",
+            "vol": "1"
         }
         # app = QApplication(sys.argv)
         global window
         window.close()
-        
+
         goToProblemlist(params)
         # sys.exit(app.exec_())
 
     def GoToGlobal_Rating(self):
         from problemlist_rating import goTopage
-        params={
-            "m":"Ranklist",
-            "a":"showRatingrank",
-            "page_id":"1",
-            "name":""
+        params = {
+            "m": "Ranklist",
+            "a": "showRatingrank",
+            "page_id": "1",
+            "name": ""
         }
         global window
         window.close()
@@ -323,19 +316,18 @@ class ContestApp(QMainWindow):
 
     def GoToGlobal_status(self):
         from problemlist_status import goTostatus
-        params={
-            "problem_id":"",
-            "user_name":"",
-            "judge_status":"0",
-            "language":"0",
-            "shared":"0",
-            "status_vol":"1"
+        params = {
+            "problem_id": "",
+            "user_name": "",
+            "judge_status": "0",
+            "language": "0",
+            "shared": "0",
+            "status_vol": "1"
         }
         global window
         window.close()
         goTostatus(params)
 
-        
 
 def main(params):
     global window
@@ -344,18 +336,16 @@ def main(params):
     window.center()
     window.show()
     window.query_signal.connect(goTopage)
-    
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    params={
-        "ctitle":"",
-        "ctype":"",
-        "cstate":"",
-        "page_id":"1"
+    params = {
+        "ctitle": "",
+        "ctype": "",
+        "cstate": "",
+        "page_id": "1"
     }
     main(params)
     sys.exit(app.exec_())
-    
