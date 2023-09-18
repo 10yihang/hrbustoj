@@ -11,6 +11,7 @@ from global_var import headers
 # from contest_page_status import get_status_info
 from lxml import etree
 import requests
+import os,encodings
 import sys
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
@@ -22,7 +23,8 @@ from PyQt5 import QtCore
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 url = "http://acm.hrbust.edu.cn"
 
 class ContestStatisticApp(QMainWindow):

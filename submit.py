@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-09-13 19:21:52
-LastEditTime: 2023-09-17 09:46:36
+LastEditTime: 2023-09-18 19:40:15
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -14,6 +14,9 @@ from PyQt5 import QtCore
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
 from global_var import session,headers,current_directory
+import os,encodings
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 class SubmitCodeApp(QMainWindow):
     def __init__(self):
         super().__init__()

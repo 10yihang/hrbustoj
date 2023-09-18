@@ -1,4 +1,5 @@
 import sys
+import os
 import requests
 from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QFormLayout, QHBoxLayout, QComboBox, QDesktopWidget, QAbstractItemView, QTreeView, QTreeWidgetItem, QTextEdit, QScrollBar,QHeaderView
@@ -11,10 +12,13 @@ from Crypto.Cipher import PKCS1_v1_5
 import json
 import base64
 from global_var import session,headers,current_directory
-
+import os,encodings
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 url = "http://acm.hrbust.edu.cn"
 
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 
 
 

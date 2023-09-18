@@ -1,11 +1,11 @@
 '''
 author: yihang_01
 Date: 2023-08-31 18:56:13
-LastEditTime: 2023-09-17 00:59:41
+LastEditTime: 2023-09-18 18:33:02
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
-from global_var import session
+from global_var import session,current_directory
 # from contest_page_test import session
 from global_var import headers
 # from contest_page_status import get_status_info
@@ -24,6 +24,10 @@ from PyQt5 import QtGui
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 # import markdown
 import re
+import os,encodings
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
+
 url = "http://acm.hrbust.edu.cn"
 
 class ProblemInfoApp(QMainWindow):
@@ -51,7 +55,9 @@ class ProblemInfoApp(QMainWindow):
         self.status_button = QPushButton("Status")
         self.statistics_button = QPushButton("Statistics")
         self.ranklist_button = QPushButton("Ranklist")
-
+        # cid = params["cid"]
+        cid = params.split("cid=")[1].split("&")[0]
+        # print(cid)
         com_layout = QHBoxLayout()
         com_layout.addWidget(self.problem_button)
         self.problem_button.clicked.connect(lambda:self.GoToproblems(cid))
@@ -171,7 +177,7 @@ class ProblemInfoApp(QMainWindow):
         global window
         window.close()
         params = {
-            "act":"problems",
+            # "act":"problems",
             "cid":cid
         }
         goTopage(params,cid)

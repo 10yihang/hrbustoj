@@ -12,6 +12,7 @@ from global_var import headers
 from lxml import etree
 import requests
 import sys
+import os
 from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit,QFormLayout,QHBoxLayout,QComboBox,QDesktopWidget,QAbstractItemView,QHeaderView
@@ -21,10 +22,12 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore
 # from PyQt5.QtGui import QColor
 from PyQt5 import QtGui
+import encodings
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 url = "http://acm.hrbust.edu.cn"
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 class ContestStatusApp(QMainWindow):
     def __init__(self):
         super().__init__()

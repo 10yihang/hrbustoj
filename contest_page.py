@@ -1,11 +1,12 @@
 '''
 author: yihang_01
 Date: 2023-08-28 22:39:44
-LastEditTime: 2023-09-17 00:59:05
+LastEditTime: 2023-09-18 00:29:16
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
 import sys
+import os
 import requests
 from bs4 import BeautifulSoup
 from global_var import session, headers
@@ -19,9 +20,10 @@ from PyQt5 import QtGui
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 import json
-import base64
+import base64,encodings
 from global_var import contest_password,contest_username,current_directory
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 url = "http://acm.hrbust.edu.cn"
 
 login_rsa_public_key = """-----BEGIN PUBLIC KEY-----

@@ -1,0 +1,11 @@
+*.zip
+*.txt
+1.py
+*.cmd
+*.spec
+tempCodeRunnerFile.py
+test.py
+test2.py
+*.xml
+/hrbustoj.build/
+/hrbustoj.dist/

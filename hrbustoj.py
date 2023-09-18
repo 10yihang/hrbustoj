@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-09-13 19:02:30
-LastEditTime: 2023-09-17 19:10:11
+LastEditTime: 2023-09-17 23:58:34
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -30,9 +30,10 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 import json
 import base64
-import ctypes
+import ctypes,encodings
 ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 # session=requests.Session()
 
 # 获取当前程序的目录

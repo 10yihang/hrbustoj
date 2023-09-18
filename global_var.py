@@ -4,13 +4,14 @@ from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5
 import json
 import base64
-import sys
+import sys,encodings
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QLineEdit, QPushButton,QDesktopWidget
 from PyQt5 import QtGui
 
 # 获取当前程序的目录
 current_directory = os.path.dirname(os.path.abspath(__file__))
-
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(current_directory, 'client'))
 # 构建 login.txt 的绝对路径
 login_file_path = os.path.join(current_directory, "login.txt")
 session = requests.Session()
@@ -114,7 +115,8 @@ else:
     login_window.show()
     sys.exit(app.exec_())
     with open(login_file_path, "r") as file:
-        # 逐行读取文件内容
+        # 逐行读取文件内容、
+
         lines = file.readlines()
     # print("文件不存在，请提供有效的文件路径。")
 

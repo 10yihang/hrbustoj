@@ -24,7 +24,9 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-
+import os,encodings
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 url = "http://acm.hrbust.edu.cn"
 
 

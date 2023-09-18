@@ -1,7 +1,7 @@
 '''
 author: yihang_01
 Date: 2023-09-03 11:26:07
-LastEditTime: 2023-09-17 22:43:33
+LastEditTime: 2023-09-17 23:38:47
 Description: 爱自己最重要啦
 QwQ 加油加油
 '''
@@ -13,6 +13,7 @@ Description: 爱自己最重要啦
 QwQ 加油加油
 '''
 import sys
+import os
 from global_var import session,current_directory
 # from contest_page_test import session
 from global_var import headers
@@ -22,7 +23,7 @@ import requests
 from fake_useragent import UserAgent
 import pandas as pd
 import random
-import time
+import time,encodings
 import csv
 from bs4 import BeautifulSoup
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTableView, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QFormLayout, QHBoxLayout, QComboBox, QDesktopWidget, QAbstractItemView, QTreeView, QTreeWidgetItem, QTextEdit, QScrollBar,QHeaderView, QShortcut
@@ -31,10 +32,13 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 # from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 url = "http://acm.hrbust.edu.cn"
 
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(BASE_DIR, 'client'))
 
 
 
@@ -154,7 +158,7 @@ class ProblemSetApp(QMainWindow):
         self.problem_button = QPushButton("Problem")
         self.problem_button.clicked.connect(self.GoToProblem_list)
         self.rating_button = QPushButton("Rating")
-        self.rating_button.clicked.connect(self.GoToGlobal_rating)
+        self.rating_button.clicked.connect(self.GoToGlobal_Rating)
         self.status_button = QPushButton("Status")
 
         self.contest_button.setFixedHeight(50)
@@ -313,17 +317,6 @@ class ProblemSetApp(QMainWindow):
         goToProblemlist(params)
         # sys.exit(app.exec_())
 
-    def GoToGlobal_Rating(self):
-        from problemlist_rating import goTopage
-        params={
-            "m":"Ranklist",
-            "a":"showRatingrank",
-            "page_id":"1",
-            "name":""
-        }
-        global window
-        window.close()
-        goTopage(params)
 
 def goTostatus(params):
     # from hrbustoj import app
